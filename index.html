@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ProGallery AI - AI Art Contest</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;font-family:Arial,sans-serif;min-height:100vh}
+nav{position:fixed;top:0;width:100%;background:rgba(0,0,0,.4);backdrop-filter:blur(15px);z-index:1000;padding:15px 0}
+.nav-container{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:10px;font-size:1.6rem;font-weight:900}
+.logo-icon{font-size:2rem}
+.header{text-align:center;padding:140px 20px 60px}
+h1{font-size:4rem;font-weight:900;margin-bottom:20px;text-shadow:0 5px 30px rgba(0,0,0,.3)}
+.subtitle{color:rgba(255,255,255,.9);font-size:1.3rem;margin-bottom:15px}
+.prize-text{color:#ffd700;font-size:1.3rem;margin-bottom:30px;font-weight:700}
+.stats{display:flex;justify-content:center;gap:30px;margin-bottom:40px;flex-wrap:wrap}
+.stat-box{background:rgba(255,255,255,.15);padding:18px 30px;border-radius:20px}
+.stat-num{font-size:2.2rem;font-weight:900;color:#ffd700}
+.stat-label{font-size:.9rem;opacity:.9;margin-top:5px}
+.upload-btn{background:#fff;color:#667eea;border:none;padding:22px 60px;font-size:1.3rem;font-weight:800;border-radius:50px;cursor:pointer;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+.info-box{background:rgba(255,255,255,.15);border-radius:20px;padding:35px;margin:0 auto 50px;max-width:900px;text-align:center}
+.info-box h3{color:#ffd700;margin-bottom:25px;font-size:1.8rem}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;text-align:left;margin-top:25px}
+.rule{background:rgba(0,0,0,.3);padding:20px;border-radius:15px}
+.rule-num{color:#ffd700;font-size:2rem;font-weight:900;margin-bottom:10px}
+#gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:30px;padding:20px 0 80px}
+.img-card{border-radius:20px;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.3);background:rgba(255,255,255,.1);position:relative}
+.img-card:hover{transform:translateY(-10px)}
+.img-card img{width:100%;height:380px;object-fit:cover;display:block}
+.price{position:absolute;top:15px;right:15px;background:#ffd700;color:#667eea;padding:8px 18px;border-radius:20px;font-weight:900}
+.img-info{padding:18px;background:rgba(0,0,0,.5)}
+.img-title{font-weight:700;font-size:1.1rem;margin-bottom:10px}
+.vote-section{display:flex;justify-content:space-between;align-items:center}
+.vote-btn{background:#ffd700;color:#667eea;border:none;padding:8px 22px;border-radius:20px;font-weight:800;cursor:pointer}
+.vote-btn:disabled{opacity:.5;cursor:not-allowed}
+.vote-count{font-weight:800;font-size:1.1rem}
+#fileInput{display:none}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:2000;justify-content:center;align-items:center;padding:20px}
+.modal.active{display:flex}
+.modal-content{background:#fff;color:#333;padding:40px;border-radius:25px;text-align:center;max-width:500px;width:100%}
+.modal h2{color:#667eea;margin-bottom:15px;font-size:2rem}
+.pay-link{background:#0070ba;color:white;padding:16px 40px;border-radius:50px;text-decoration:none;display:inline-block;font-weight:700;margin:15px 0}
+.confirm-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;padding:16px 40px;border-radius:50px;cursor:pointer;font-weight:700;margin-top:10px}
+.close-btn{background:transparent;color:#999;border:2px solid #ddd;padding:10px 30px;border-radius:50px;cursor:pointer;margin-top:15px}
+footer{background:rgba(0,0,0,.4);padding:40px 20px;margin-top:80px;text-align:center}
+footer a{color:#ffd700;text-decoration:none;margin:0 15px;font-weight:500}
+@media(max-width:768px){h1{font-size:2.5rem}.stats{gap:15px}}
+</style>
+</head>
+<body>
+<nav>
+<div class="nav-container">
+<div class="logo"><span class="logo-icon">🤖</span> ProGallery AI</div>
+</div>
+</nav>
+
+<div class="header">
+<h1>ProGallery AI</h1>
+<p class="subtitle">AI Art Contest · Vote · Win Prize</p>
+<p class="prize-text">🏆 Best AI image of the month wins 100€</p>
+<div class="stats">
+<div class="stat-box"><div class="stat-num" id="totalImages">6</div><div class="stat-label">AI Artworks</div></div>
+<div class="stat-box"><div class="stat-num" id="totalVotes">1534</div><div class="stat-label">Total Votes</div></div>
+<div class="stat-box"><div class="stat-num">100€</div><div class="stat-label">Monthly Prize</div></div>
+</div>
+<button class="upload-btn" onclick="startPayment()">+ UPLOAD AI ART FOR 1€</button>
+</div>
+
+<div class="container">
+<div class="info-box">
+<h3>How The AI Contest Works?</h3>
+<div class="rules">
+<div class="rule"><div class="rule-num">01</div><p><strong>Pay 1€</strong> and upload your best AI-generated artwork</p></div>
+<div class="rule"><div class="rule-num">02</div><p><strong>Community votes</strong> for the most creative AI art</p></div>
+<div class="rule"><div class="rule-num">03</div><p><strong>Winner gets 100€</strong> via PayPal at month end</p></div>
+</div>
+<div id="gallery"></div>
+</div>
+
+<footer>
+<p style="font-size:1.2rem;font-weight:700;margin-bottom:15px">🤖 <strong>ProGallery AI © 2026</strong></p>
+<p><a href="#" onclick="alert('Terms');return false;">Terms</a><a href="#" onclick="alert('Privacy');return false;">Privacy</a></p>
+</footer>
+
+<input type="file" id="fileInput" accept="image/*">
+
+<div class="modal" id="payModal">
+<div class="modal-content">
+<h2>Payment 1€</h2>
+<p style="color:#666;margin-bottom:20px">To enter the contest, pay 1€:</p>
+<a href="https://www.paypal.com/paypalme/ТВОЈ_ЈУЗЕРНЕЈМ/1EUR" target="_blank" class="pay-link">💳 Pay with PayPal</a>
+<p style="font-size:.9rem;color:#999;margin:20px 0">After payment, upload your AI artwork:</p>
+<button class="confirm-btn" onclick="confirmPayment()">✓ Paid, Upload AI Art</button>
+<br><button class="close-btn" onclick="closeModal()">Cancel</button>
+</div>
+</div>
+
+<script>
+const d=[
+{id:1,url:'https://picsum.photos/seed/cyberpunk/800/800',title:'Cyberpunk City 2077',votes:312},
+{id:2,url:'https://picsum.photos/seed/robot/800/800',title:'AI Robot Future',votes:289},
+{id:3,url:'https://picsum.photos/seed/space/800/800',title:'Space Exploration',votes:267},
+{id:4,url:'https://picsum.photos/seed/neon/800/800',title:'Neon Street',votes:245},
+{id:5,url:'https://picsum.photos/seed/fantasy/800/800',title:'Fantasy Portal',votes:198},
+{id:6,url:'https://picsum.photos/seed/galaxy/800/800',title:'Digital Universe',votes:223}
+];
+let u=JSON.parse(localStorage.getItem('userImages')||'[]');
+let voted=JSON.parse(localStorage.getItem('votedImages')||'[]');
+const g=document.getElementById('gallery'),f=document.getElementById('fileInput'),m=document.getElementById('payModal');
+function startPayment(){m.classList.add('active')}
+function closeModal(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('active'))}
+function confirmPayment(){closeModal();f.click()}
+function vote(id){if(voted.includes(id))return;voted.push(id);localStorage.setItem('votedImages',JSON.stringify(voted));let img=[...u,...d].find(i=>i.id===id);if(img){img.votes=(img.votes||0)+1;localStorage.setItem('userImages',JSON.stringify(u));render()}}
+f.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{u.unshift({id:Date.now(),url:ev.target.result,title:'Your AI Art',votes:0});localStorage.setItem('userImages',JSON.stringify(u));render()};r.readAsDataURL(file)};
+function render(){g.innerHTML='';const all=[...u,...d].sort((a,b)=>(b.votes||0)-(a.votes||0));let tv=0;all.forEach(i=>{tv+=(i.votes||0);const hasV=voted.includes(i.id);const c=document.createElement('div');c.className='img-card';c.innerHTML=`<img src="${i.url}" alt="${i.title}"><div class="price">1€</div><div class="img-info"><div class="img-title">${i.title}</div><div class="vote-section"><button class="vote-btn" onclick="vote(${i.id})" ${hasV?'disabled':''}>${hasV?'Voted':'Vote'}</button><div class="vote-count">❤️ ${i.votes||0}</div></div></div>`;g.appendChild(c)});document.getElementById('totalImages').textContent=all.length;document.getElementById('totalVotes').textContent=tv}
+render();
+</script>
+</body>
+</html>
