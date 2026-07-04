@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProGallery AI - Ljupcho</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 8px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .upload-section {
+            background: rgba(255,255,255,0.98);
+            padding: 35px 25px;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102,126,234,0.5);
+        }
+
+        .upload-btn:active {
+            transform: scale(0.95);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102,126,234,0.7);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .upload-tip {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .stats-bar {
+            background: rgba(255,255,255,0.98);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-item {
+            color: #333;
+        }
+
+        .stat-number {
+            color: #667eea;
+            font-size: 24px;
+            display: block;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            margin: 25px 0;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .img-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .img-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.35);
+        }
+
+        .img-wrapper {
+            position: relative;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .img-card img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.4s ease;
+        }
+
+        .img-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .img-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .price-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .img-info {
+            padding: 18px;
+        }
+
+        .img-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn:active {
+            transform: scale(0.92);
+        }
+
+        .vote-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            grid-column: span 2;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .paypal-btn {
+            background: linear-gradient(135deg, #0070ba 0%, #1546a0 100%);
+            color: white;
+            grid-column: span 2;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            grid-column: span 2;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: white;
+            font-size: 22px;
+            margin-top: 60px;
+            background: rgba(255,255,255,0.15);
+            padding: 40px;
+            border-radius: 20px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .stats-bar {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📸 ProGallery AI</h1>
+            <p>Неограничено качување слики со ImgBB Cloud ☁️ + PayPal 💰</p>
+        </div>
+
+        <div class="upload-section">
+            <input type="file" id="fileInput" multiple accept="image/*">
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                📤 Прикачи Слики
+            </button>
+            <p class="upload-tip">💡 Можеш да селектираш 100+ слики одеднаш | JPG, PNG, GIF</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number" id="totalImages">0</span>
+                Вкупно Слики
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="totalVotes">0</span>
+                Вкупно Лајкови
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">∞</span>
+                ImgBB Cloud
+            </div>
+        </div>
+
+        <div class="loader" id="loader">
+            ⏳ Качувам слики на Cloud... Ве молам почекајте
+        </div>
+
+        <div class="gallery" id="gallery"></div>
+        
+        <div class="empty-state" id="emptyState">
+            <p style="font-size: 50px;">📷</p>
+            <p><strong>Галеријата е празна</strong></p>
+            <p>Качи ја првата слика горе 👆</p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ⚠️ СМЕНИ ГО ОВА СО ТВОЈ PAYPAL МЕЈЛ!
+        const PAYPAL_EMAIL = 'tvoemail@paypal.com';
+        
+        // ТВОЈ IMGBB API КЛУЧ
+        const API_KEY = 'ae8fa9ea565927708b803b28c74b635e';
+        
+        // Земи слики од localStorage
+        let images = JSON.parse(localStorage.getItem('progallery_final')) || [];
+
+        // Прикажи toast известување
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Рендерирај галерија
+        function renderGallery() {
+            const gallery = document.getElementById('gallery');
+            const emptyState = document.getElementById('emptyState');
+            gallery.innerHTML = '';
+            
+            if (images.length === 0) {
+                emptyState.style.display = 'block';
+                document.getElementById('totalImages').textContent = 0;
+                document.getElementById('totalVotes').textContent = 0;
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            let totalVotes = 0;
+
+            images.forEach((img, index) => {
+                totalVotes += img.votes || 0;
+                const card = document.createElement('div');
+                card.className = 'img-card';
+                card.innerHTML = `
+                    <div class="img-wrapper">
+                        <img src="${img.url}" alt="Слика ${index + 1}" onclick="window.open('${img.url}', '_blank')" loading="lazy">
+                        <div class="img-overlay">#${index + 1}</div>
+                        <div class="price-tag">$${img.price || 5}</div>
+                    </div>
+                    <div class="img-info">
+                        <div class="img-actions">
+                            <button class="btn vote-btn" onclick="vote(${index})">
+                                ❤️ Лајкни <span>${img.votes || 0}</span>
+                            </button>
+                            <button class="btn share-btn" onclick="share('${img.url}')">
+                                🔗 Share
+                            </button>
+                            <button class="btn download-btn" onclick="download('${img.url}', ${index})">
+                                ⬇️ Download
+                            </button>
+                            <button class="btn paypal-btn" onclick="buyImage('${img.url}', ${img.price || 5})">
+                                💰 Купи $${img.price || 5}
+                            </button>
+                            <button class="btn delete-btn" onclick="deleteImg(${index})">
+                                🗑️ Избриши
+                            </button>
+                        </div>
+                    </div>
+                `;
+                gallery.appendChild(card);
+            });
+            
+            document.getElementById('totalImages').textContent = images.length;
+            document.getElementById('totalVotes').textContent = totalVotes;
+        }
+
+        // Качување слики на ImgBB
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+            
+            document.getElementById('loader').style.display = 'block';
+            let successCount = 0;
+
+            for (let file of files) {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                try {
+                    const response = await fetch(`https://api.imgbb.com/1/upload?key=${API_KEY}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        images.unshift({
+                            url: data.data.url,
+                            delete_url: data.data.delete_url,
+                            votes: 0,
+                            price: 5,
+                            date: new Date().toLocaleDateString('mk-MK'),
+                            size: data.data.size,
+                            id: Date.now() + Math.random()
+                        });
+                        successCount++;
+                    }
+                } catch (error) {
+                    console.error('Грешка при качување:', error);
+                }
+            }
+
+            localStorage.setItem('progallery_final', JSON.stringify(images));
+            renderGallery();
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            showToast(`✅ Качени ${successCount} слики успешно!`);
+        });
+
+        // Vote функција
+        function vote(index) {
+            images[index].votes = (images[index].votes || 0) + 1;
+            localStorage.setItem('progallery_final', JSON.stringify(images));
+            renderGallery();
+            showToast('❤️ Лајкнато!');
+        }
+
+        // Share функција
+        function share(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('🔗 Линкот е копиран!');
+            }).catch(() => {
+                prompt('Копирај го линкот:', url);
+            });
+        }
+
+        // Download функција
+        function download(url, index) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `progallery_slika_${index + 1}.jpg`;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('⬇️ Симнувањето почна!');
+        }
+
+        // PayPal Buy функција
+        function buyImage(url, price) {
+            const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${PAYPAL_EMAIL}&item_name=ProGallery_Slika&amount=${price}&currency_code=USD&return=${encodeURIComponent(url)}`;
+            window.open(paypalUrl, '_blank');
+            showToast('💰 Отварам PayPal...');
+        }
+
+        // Delete функција
+        function deleteImg(index) {
+            if (confirm('Сигурно сакаш да ја избришеш сликата од галеријата?\n\nСликата ќе остане на ImgBB Cloud.')) {
+                images.splice(index, 1);
+                localStorage.setItem('progallery_final', JSON.stringify(images));
+                renderGallery();
+                showToast('🗑️ Сликата е избришана!');
+            }
+        }
+
+        // Стартувај галерија кога се вчитува страницата
+        renderGallery();
+    </script>
+</body>
+</html>
