@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ProGallery - Photo Contest | Win 100€ Monthly Prize</title>
+<meta name="description" content="Join ProGallery photo contest. Upload your best image for 1€, get votes, and win 100€ monthly prize. Professional photography competition platform.">
+<meta name="keywords" content="photo contest, photography competition, win money, upload photos, vote">
+<meta property="og:title" content="ProGallery - Win 100€ Photo Contest">
+<meta property="og:description" content="Upload your best photo for 1€ and win 100€ monthly prize">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://koska211.github.io/progallery/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+<style>
+:root{--p:#667eea;--s:#764ba2;--g:#ffd700}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,var(--p) 0%,var(--s) 100%);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;min-height:100vh;line-height:1.6}
+nav{position:fixed;top:0;width:100%;background:rgba(0,0,0,.2);backdrop-filter:blur(20px);z-index:1000;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:1.5rem;font-weight:900}
+.nav-links{display:flex;gap:30px;align-items:center}
+.nav-links a{color:#fff;text-decoration:none;font-weight:500;transition:.3s}
+.nav-links a:hover{color:var(--g)}
+.lang-switcher{display:flex;gap:8px}
+.lang-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:.9rem}
+.lang-btn.active{background:rgba(255,255,255,.4)}
+.header{text-align:center;padding:140px 20px 60px}
+h1{font-size:4.5rem;font-weight:900;margin-bottom:20px;text-shadow:0 5px 30px rgba(0,0,0,.3)}
+.subtitle{color:rgba(255,255,255,.9);font-size:1.4rem;margin-bottom:15px}
+.prize-text{color:var(--g);font-size:1.3rem;margin-bottom:20px;font-weight:700}
+.stats{display:flex;justify-content:center;gap:40px;margin-bottom:40px;flex-wrap:wrap}
+.stat-box{background:rgba(255,255,255,.15);padding:15px 30px;border-radius:15px;backdrop-filter:blur(10px)}
+.stat-num{font-size:2rem;font-weight:900;color:var(--g)}
+.stat-label{font-size:.9rem;opacity:.9}
+.upload-btn{background:#fff;color:var(--p);border:none;padding:22px 65px;font-size:1.4rem;font-weight:800;border-radius:50px;cursor:pointer;box-shadow:0 10px 40px rgba(0,0,0,.3);text-transform:uppercase;transition:.3s}
+.upload-btn:hover{transform:translateY(-5px);box-shadow:0 15px 50px rgba(0,0,0,.4)}
+.container{max-width:1400px;margin:0 auto;padding:0 20px}
+.info-box{background:rgba(255,255,255,.15);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:35px;margin:0 auto 50px;max-width:900px;text-align:center}
+.info-box h3{color:var(--g);margin-bottom:20px;font-size:1.8rem}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;text-align:left;margin-top:25px}
+.rule{background:rgba(0,0,0,.2);padding:20px;border-radius:15px}
+.rule-num{color:var(--g);font-size:2rem;font-weight:900;margin-bottom:10px}
+#gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:30px;padding:20px 0 80px}
+.img-card{border-radius:20px;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.3);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);position:relative;transition:.4s}
+.img-card:hover{transform:translateY(-10px)}
+.img-card img{width:100%;height:380px;object-fit:cover;display:block}
+.price{position:absolute;top:15px;right:15px;background:var(--g);color:var(--p);padding:10px 20px;border-radius:25px;font-weight:900}
+.img-info{padding:18px;background:rgba(0,0,0,.4)}
+.img-title{font-weight:600;font-size:1.1rem;margin-bottom:10px}
+.vote-section{display:flex;justify-content:space-between;align-items:center}
+.vote-btn{background:var(--g);color:var(--p);border:none;padding:8px 20px;border-radius:20px;font-weight:700;cursor:pointer;transition:.3s}
+.vote-btn:hover{transform:scale(1.1)}
+.vote-btn:disabled{opacity:.5;cursor:not-allowed}
+.vote-count{font-weight:700;font-size:1.1rem}
+#fileInput{display:none}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:2000;justify-content:center;align-items:center;padding:20px}
+.modal.active{display:flex}
+.modal-content{background:#fff;color:#333;padding:50px;border-radius:25px;text-align:center;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h2{color:var(--p);margin-bottom:20px;font-size:2rem}
+.pay-link{background:#0070ba;color:white;padding:16px 40px;border-radius:50px;text-decoration:none;display:inline-block;font-weight:700;margin:20px 0}
+.confirm-btn{background:linear-gradient(135deg,var(--p),var(--s));color:white;border:none;padding:16px 40px;border-radius:50px;cursor:pointer;font-weight:700;margin-top:15px}
+.close-btn{background:transparent;color:#999;border:1px solid #ddd;padding:12px 30px;border-radius:50px;cursor:pointer;margin-top:20px}
+footer{background:rgba(0,0,0,.3);padding:40px 20px;margin-top:80px;text-align:center;border-top:1px solid rgba(255,255,255,.1)}
+footer a{color:var(--g);text-decoration:none;margin:0 15px}
+footer a:hover{text-decoration:underline}
+.cookie-banner{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,.95);padding:20px;z-index:3000;display:none}
+.cookie-banner.show{display:block}
+.cookie-banner button{background:var(--g);color:var(--p);border:none;padding:10px 30px;border-radius:25px;font-weight:700;cursor:pointer;margin-left:15px}
+@media(max-width:768px){h1{font-size:2.5rem}.nav-links{display:none}.stats{gap:20px}.upload-btn{padding:18px 40px;font-size:1.1rem}}
+</style>
+</head>
+<body>
+<nav>
+<div class="nav-container">
+<div class="logo">🏆 ProGallery</div>
+<div class="nav-links">
+<a href="#gallery" data-lang="navGallery">Gallery</a>
+<a href="#rules" data-lang="navRules">Rules</a>
+<a href="#contact" data-lang="navContact">Contact</a>
+<div class="lang-switcher">
+<button class="lang-btn active" onclick="setLang('en')">EN</button>
+<button class="lang-btn" onclick="setLang('mk')">МК</button>
+<button class="lang-btn" onclick="setLang('de')">DE</button>
+</div>
+</nav>
+
+<div class="header">
+<h1 data-lang="title">ProGallery</h1>
+<p class="subtitle" data-lang="subtitle">Upload · Vote · Win Prize</p>
+<p class="prize-text" data-lang="prizeText">🏆 Best image of the month wins 100€</p>
+<div class="stats">
+<div class="stat-box"><div class="stat-num" id="totalImages">0</div><div class="stat-label" data-lang="statImages">Photos</div></div>
+<div class="stat-box"><div class="stat-num" id="totalVotes">0</div><div class="stat-label" data-lang="statVotes">Votes</div></div>
+<div class="stat-box"><div class="stat-num">100€</div><div class="stat-label" data-lang="statPrize">Monthly Prize</div></div>
+</div>
+<button class="upload-btn" onclick="startPayment()" data-lang="uploadBtn">+ UPLOAD FOR 1€</button>
+</div>
+
+<div class="container">
+<div class="info-box" id="rules">
+<h3 data-lang="howTitle">How It Works?</h3>
+<div class="rules">
+<div class="rule"><div class="rule-num">1</div><p data-lang="rule1">Pay 1€ and upload your best photo</p></div>
+<div class="rule"><div class="rule-num">2</div><p data-lang="rule2">Community votes for the best images</p></div>
+<div class="rule"><div class="rule-num">3</div><p data-lang="rule3">Winner with most votes gets 100€ at month end</p></div>
+</div>
+</div>
+<div id="gallery"></div>
+</div>
+
+<footer id="contact">
+<p><strong>ProGallery © 2026</strong></p>
+<p style="margin:20px 0">
+<a href="#" onclick="showModal('terms')" data-lang="footerTerms">Terms & Conditions</a>
+<a href="#" onclick="showModal('privacy')" data-lang="footerPrivacy">Privacy Policy</a>
+<a href="mailto:contact@progallery.com" data-lang="footerContact">Contact Us</a>
+</p>
+<p style="opacity:.7;font-size:.9rem" data-lang="footerText">Professional Photo Contest Platform</p>
+</footer>
+
+<input type="file" id="fileInput" accept="image/*">
+
+<div class="modal" id="payModal">
+<div class="modal-content">
+<h2 data-lang="modalTitle">Payment 1€</h2>
+<p style="color:#666;margin-bottom:25px" data-lang="modalText">To enter the contest, pay 1€:</p>
+<a href="https://www.paypal.com/paypalme/ТВОЈ_ЈУЗЕРНЕЈМ/1EUR" target="_blank" class="pay-link" data-lang="payBtn">Pay with PayPal</a>
+<p style="font-size:.9rem;color:#999;margin:25px 0" data-lang="afterPay">After payment:</p>
+<button class="confirm-btn" onclick="confirmPayment()" data-lang="confirmBtn">✓ Paid, Upload Image</button>
+<br><button class="close-btn" onclick="closeModal()" data-lang="cancelBtn">Cancel</button>
+</div>
+
+<div class="modal" id="infoModal">
+<div class="modal-content" id="infoContent"></div>
+</div>
+
+<div class="cookie-banner" id="cookieBanner">
+<span data-lang="cookieText">We use cookies to improve your experience.</span>
+<button onclick="acceptCookies()" data-lang="cookieBtn">Accept</button>
+</div>
+
+<script>
+const t={en:{navGallery:"Gallery",navRules:"Rules",navContact:"Contact",title:"ProGallery",subtitle:"Upload · Vote · Win Prize",prizeText:"🏆 Best image of the month wins 100€",statImages:"Photos",statVotes:"Votes",statPrize:"Monthly Prize",uploadBtn:"+ UPLOAD FOR 1€",howTitle:"How It Works?",rule1:"Pay 1€ and upload your best photo",rule2:"Community votes for the best images",rule3:"Winner with most votes gets 100€ at month end",modalTitle:"Payment 1€",modalText:"To enter the contest, pay 1€:",payBtn:"Pay with PayPal",afterPay:"After payment:",confirmBtn:"✓ Paid, Upload Image",cancelBtn:"Cancel",footerTerms:"Terms & Conditions",footerPrivacy:"Privacy Policy",footerContact:"Contact Us",footerText:"Professional Photo Contest Platform",cookieText:"We use cookies to improve your experience.",cookieBtn:"Accept",voteBtn:"Vote",votedBtn:"Voted"},mk:{navGallery:"Галерија",navRules:"Правила",navContact:"Контакт",title:"ProGallery",subtitle:"Качи слика · Гласај · Освој награда",prizeText:"🏆 Најдобра слика на месецот освојува 100€",statImages:"Слики",statVotes:"Гласови",statPrize:"Месечна награда",uploadBtn:"+ КАЧИ СЛИКА ЗА 1€",howTitle:"Како функционира?",rule1:"Плати 1€ и качи ја твојата најдобра слика",rule2:"Заедницата гласа за најдобрите слики",rule3:"Победникот со најмногу гласови добива 100€ на крај на месецот",modalTitle:"Плаќање 1€",modalText:"За да учествуваш, плати 1€:",payBtn:"Плати со PayPal",afterPay:"После плаќање:",confirmBtn:"✓ Платив, Качи слика",cancelBtn:"Откажи",footerTerms:"Услови",footerPrivacy:"Приватност",footerContact:"Контакт",footerText:"Професионална платформа за фото натпревари",cookieText:"Користиме колачиња за подобро искуство.",cookieBtn:"Прифати",voteBtn:"Гласај",votedBtn:"Гласано"},de:{navGallery:"Galerie",navRules:"Regeln",navContact:"Kontakt",title:"ProGallery",subtitle:"Hochladen · Abstimmen · Preis gewinnen",prizeText:"🏆 Bestes Bild des Monats gewinnt 100€",statImages:"Fotos",statVotes:"Stimmen",statPrize:"Monatspreis",uploadBtn:"+ FÜR 1€ HOCHLADEN",howTitle:"Wie funktioniert es?",rule1:"Zahle 1€ und lade dein bestes Foto hoch",rule2:"Community stimmt für die besten Bilder",rule3:"Gewinner mit den meisten Stimmen erhält 100€ am Monatsende",modalTitle:"Zahlung 1€",modalText:"Um teilzunehmen, zahle 1€:",payBtn:"Mit PayPal bezahlen",afterPay:"Nach der Zahlung:",confirmBtn:"✓ Bezahlt, Bild hochladen",cancelBtn:"Abbrechen",footerTerms:"AGB",footerPrivacy:"Datenschutz",footerContact:"Kontakt",footerText:"Professionelle Foto-Wettbewerbsplattform",cookieText:"Wir verwenden Cookies für ein besseres Erlebnis.",cookieBtn:"Akzeptieren",voteBtn:"Abstimmen",votedBtn:"Abgestimmt"}};
+let lang='en';
+const d=[{id:1,url:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',title:'Mountain Landscape',votes:234},{id:2,url:'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800',title:'Nature Beauty',votes:189},{id:3,url:'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=800',title:'Forest Path',votes:156},{id:4,url:'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800',title:'Serene Lake',votes:201},{id:5,url:'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=800',title:'Waterfall',votes:178},{id:6,url:'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800',title:'Desert Sunset',votes:145}];
+let u=JSON.parse(localStorage.getItem('userImages')||'[]');
+let voted=JSON.parse(localStorage.getItem('votedImages')||'[]');
+const g=document.getElementById('gallery'),f=document.getElementById('fileInput'),m=document.getElementById('payModal');
+function setLang(l){lang=l;document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');document.querySelectorAll('[data-lang]').forEach(e=>{e.innerHTML=t[l][e.getAttribute('data-lang')]});render()}
+function startPayment(){m.classList.add('active')}
+function closeModal(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('active'))}
+function confirmPayment(){closeModal();f.click()}
+function showModal(type){const c=document.getElementById('infoContent');if(type==='terms'){c.innerHTML=`<h2>Terms & Conditions</h2><p style="text-align:left;margin:20px 0">1. Entry fee: 1€ per image<br>2. One vote per user per image<br>3. Winner selected monthly<br>4. Prize: 100€ via PayPal<br>5. No refunds after upload</p><button class="close-btn" onclick="closeModal()">Close</button>`}else{c.innerHTML=`<h2>Privacy Policy</h2><p style="text-align:left;margin:20px 0">We collect: email, uploaded images, votes.<br>Data used for contest only.<br>No data sold to third parties.<br>Cookies used for functionality.</p><button class="close-btn" onclick="closeModal()">Close</button>`}document.getElementById('infoModal').classList.add('active')}
+function vote(id){if(voted.includes(id))return;voted.push(id);localStorage.setItem('votedImages',JSON.stringify(voted));let img=[...u,...d].find(i=>i.id===id);if(img){img.votes=(img.votes||0)+1;localStorage.setItem('userImages',JSON.stringify(u));render()}}
+f.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{u.unshift({id:Date.now(),url:ev.target.result,title:'Your Image',votes:0});localStorage.setItem('userImages',JSON.stringify(u));render()};r.readAsDataURL(file)};
+function render(){g.innerHTML='';const all=[...u,...d].sort((a,b)=>(b.votes||0)-(a.votes||0));let tv=0;all.forEach(i=>{tv+=(i.votes||0);const hasV=voted.includes(i.id);const c=document.createElement('div');c.className='img-card';c.innerHTML=`<img src="${i.url}" alt="${i.title}"><div class="price">1€</div><div class="img-info"><div class="img-title">${i.title}</div><div class="vote-section"><button class="vote-btn" onclick="vote(${i.id})" ${hasV?'disabled':''}>${hasV?t[lang].votedBtn:t[lang].voteBtn}</button><div class="vote-count">❤️ ${i.votes||0}</div></div></div>`;g.appendChild(c)});document.getElementById('totalImages').textContent=all.length;document.getElementById('totalVotes').textContent=tv}
+function acceptCookies(){localStorage.setItem('cookiesAccepted','true');document.getElementById('cookieBanner').classList.remove('show')}
+if(!localStorage.getItem('cookiesAccepted'))document.getElementById('cookieBanner').classList.add('show');
+setLang(lang);render();
+// Google Analytics - замени G-XXXXXXXXXX со твој ID
+// window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');
+</script>
+</body>
+</html>
