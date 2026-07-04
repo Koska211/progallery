@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtContest PRO ☁️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
+        body { background: #0f0f1e; }
+       .hero-bg { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+       .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+       .image-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+       .image-card:hover { transform: translateY(-10px) scale(1.02); }
+       .image-card:hover.image-overlay { opacity: 1; }
+       .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+        }
+       .rank-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            font-weight: 800;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+       .vote-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+       .vote-btn:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4); }
+       .vote-btn:active { transform: scale(0.95); }
+       .voted { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%)!important; }
+       .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+       .slide-up { animation: slideUp 0.5s ease; }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+    <div id="toast" class="fixed top-6 right-6 z-50 hidden"></div>
+    
+    <!-- Hero Section -->
+    <div class="hero-bg">
+        <div class="container mx-auto px-4 py-16 max-w-7xl">
+            <div class="text-center slide-up">
+                <div class="inline-block mb-4 px-6 py-2 glass-card rounded-full text-sm font-semibold">
+                    <i class="fas fa-cloud"></i> CLOUD POWERED • UNLIMITED STORAGE
+                </div>
+                <h1 class="text-6xl md:text-8xl font-black mb-6">
+                    ArtContest<span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-pink-200">PRO</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-purple-100 mb-8 max-w-2xl mx-auto">
+                    Најпрофесионалниот AI Art натпревар. Качувај неограничено. Гласај во живо.
+                </p>
+                <div class="flex justify-center gap-4 flex-wrap">
+                    <button onclick="toggleAdmin()" class="glass-card px-8 py-4 rounded-2xl font-bold hover:bg-white/10 transition text-lg">
+                        <i class="fas fa-lock"></i> Admin Panel
+                    </button>
+                    <a href="https://paypal.me/LjupchoJaneski/1EUR" target="_blank" class="px-8 py-4 rounded-2xl font-bold bg-white text-purple-600 hover:bg-purple-50 transition text-lg">
+                        <i class="fas fa-heart"></i> Support Creator
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="container mx-auto px-4 -mt-8 mb-12 max-w-7xl">
+        <div class="glass-card rounded-3xl p-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="text-center">
+                <div class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400" id="statImages">0</div>
+                <div class="text-purple-300 mt-2"><i class="fas fa-images"></i> Вкупно слики</div>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400" id="statVotes">0</div>
+                <div class="text-purple-300 mt-2"><i class="fas fa-heart"></i> Вкупно гласови</div>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">∞</div>
+                <div class="text-purple-300 mt-2"><i class="fas fa-infinity"></i> Cloud Storage</div>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="text-purple-300 mt-2">Live Sync</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="container mx-auto px-4 mb-12 max-w-7xl hidden">
+        <div class="glass-card rounded-3xl p-8">
+            <div id="loginForm">
+                <h2 class="text-3xl font-bold mb-6"><i class="fas fa-shield-alt"></i> Admin Access</h2>
+                <input type="password" id="adminPass" placeholder="Enter admin password" 
+                    class="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 mb-4 text-white text-lg focus:outline-none focus:border-purple-400">
+                <button onclick="login()" class="w-full vote-btn py-4 rounded-2xl font-bold text-lg">
+                    <i class="fas fa-unlock"></i> Unlock Panel
+                </button>
+            </div>
+            <div id="uploadForm" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold"><i class="fas fa-cloud-upload-alt"></i> Upload Center</h2>
+                    <button onclick="logout()" class="glass-card px-6 py-3 rounded-xl hover:bg-white/10 transition">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+                <div class="border-2 border-dashed border-white/20 rounded-3xl p-12 text-center mb-6 hover:border-purple-400 transition cursor-pointer" onclick="document.getElementById('fileInput').click()">
+                    <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
+                    <i class="fas fa-cloud-upload-alt text-7xl mb-4 text-purple-400"></i>
+                    <p class="text-2xl font-bold mb-2">Drop images here or click to browse</p>
+                    <p class="text-purple-300">Upload unlimited • Auto cloud hosting • Max 32MB per image</p>
+                </div>
+                <div id="preview" class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6"></div>
+                <div id="uploadProgress" class="hidden mb-6">
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="pulse"><i class="fas fa-spinner fa-spin text-3xl text-purple-400"></i></div>
+                            <div class="flex-1">
+                                <div class="text-lg font-semibold" id="uploadText">Uploading...</div>
+                                <div class="w-full bg-white/10 rounded-full h-2 mt-2">
+                                    <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="uploadImages()" id="uploadBtn" class="w-full vote-btn py-5 rounded-2xl font-bold text-xl">
+                    <i class="fas fa-rocket"></i> Upload to Cloud
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="container mx-auto px-4 mb-8 max-w-7xl">
+        <div class="glass-card rounded-2xl p-4 flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex gap-2">
+                <button onclick="setSort('votes')" id="sortVotes" class="px-6 py-3 rounded-xl bg-purple-500/20 border border-purple-500/50 font-semibold">
+                    <i class="fas fa-fire"></i> Топ Гласови
+                </button>
+                <button onclick="setSort('newest')" id="sortNewest" class="px-6 py-3 rounded-xl glass-card hover:bg-white/10 transition font-semibold">
+                    <i class="fas fa-clock"></i> Најнови
+                </button>
+            </div>
+            <input type="text" id="searchInput" placeholder="Пребарај слики..." 
+                class="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white w-full md:w-64 focus:outline-none focus:border-purple-400">
+        </div>
+    </div>
+
+    <!-- Gallery -->
+    <div class="container mx-auto px-4 pb-16 max-w-7xl">
+        <div id="gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="glass-card rounded-3xl p-16 text-center col-span-full">
+                <div class="pulse"><i class="fas fa-spinner fa-spin text-6xl text-purple-400 mb-6"></i></div>
+                <p class="text-2xl text-purple-200">Loading cloud gallery...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ТВОИТЕ КЛУЧЕВИ ✅
+        const IMGBB_API_KEY = '87f05c24bcc91eb7a27b630a8cc333bc';
+        const JSONBIN_BIN_ID = '6a496fdeda38895dfe2eb3a2';
+        const JSONBIN_MASTER_KEY = '$2a$10$XFxLWvcDN9GpcbLOaImaL.PQAJNkszEP5YvgEmtv.ev5e.5Wu5oqW';
+        const ADMIN_PASSWORD = 'admin123';
+        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+        
+        let isAdmin = false;
+        let selectedFiles = [];
+        let images = [];
+        let userVotes = JSON.parse(localStorage.getItem('artcontest_pro_votes') || '{}');
+        let currentSort = 'votes';
+
+        function toast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            const icon = type === 'error'? 'fa-circle-xmark' : 'fa-circle-check';
+            const color = type === 'error'? 'from-red-500 to-pink-500' : 'from-green-500 to-emerald-500';
+            t.className = `glass-card px-6 py-4 rounded-2xl bg-gradient-to-r ${color} slide-up`;
+            t.innerHTML = `<i class="fas ${icon}"></i> ${msg}`;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 3000);
+        }
+
+        function toggleAdmin() {
+            document.getElementById('adminPanel').classList.toggle('hidden');
+        }
+
+        window.login = function() {
+            if (document.getElementById('adminPass').value === ADMIN_PASSWORD) {
+                isAdmin = true;
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('uploadForm').classList.remove('hidden');
+                toast('Welcome back, Admin!');
+                renderGallery();
+            } else {
+                toast('Wrong password!', 'error');
+            }
+        }
+
+        window.logout = function() {
+            isAdmin = false;
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('uploadForm').classList.add('hidden');
+            document.getElementById('adminPass').value = '';
+            document.getElementById('adminPanel').classList.add('hidden');
+            renderGallery();
+        }
+
+        document.getElementById('fileInput').onchange = (e) => {
+            selectedFiles = Array.from(e.target.files);
+            const preview = document.getElementById('preview');
+            preview.innerHTML = '';
+            selectedFiles.forEach((file, i) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.innerHTML += `
+                        <div class="relative group">
+                            <img src="${e.target.result}" class="w-full h-32 object-cover rounded-2xl">
+                            <button onclick="removeFile(${i})" class="absolute -top-2 -right-2 bg-red-500 w-8 h-8 rounded-full opacity-0 group-hover:opacity-100 transition">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        window.removeFile = function(i) {
+            selectedFiles.splice(i, 1);
+            document.getElementById('fileInput').onchange({target: {files: selectedFiles}});
+        }
+
+        async function uploadToImgBB(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (data.success) return data.data.url;
+            throw new Error('Upload failed');
+        }
+
+        async function saveToJSONBin(data) {
+            await fetch(JSONBIN_URL, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_MASTER_KEY },
+                body: JSON.stringify(data)
+            });
+        }
+
+        async function loadFromJSONBin() {
+            try {
+                const res = await fetch(`${JSONBIN_URL}/latest`, {
+                    headers: { 'X-Master-Key': JSONBIN_MASTER_KEY }
+                });
+                const data = await res.json();
+                return data.record || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        window.uploadImages = async function() {
+            if (selectedFiles.length === 0) {
+                toast('Select images first!', 'error');
+                return;
+            }
+            
+            document.getElementById('uploadBtn').disabled = true;
+            document.getElementById('uploadProgress').classList.remove('hidden');
+            
+            let uploaded = 0;
+            for (const file of selectedFiles) {
+                try {
+                    const percent = Math.round((uploaded / selectedFiles.length) * 100);
+                    document.getElementById('uploadText').textContent = `Uploading ${uploaded + 1}/${selectedFiles.length}...`;
+                    document.getElementById('progressBar').style.width = percent + '%';
+                    
+                    const url = await uploadToImgBB(file);
+                    images.push({
+                        id: Date.now() + Math.random(),
+                        name: file.name,
+                        url: url,
+                        votes: 0,
+                        timestamp: Date.now()
+                    });
+                    uploaded++;
+                } catch (e) {
+                    toast('Upload failed for one image', 'error');
+                }
+            }
+            
+            await saveToJSONBin(images);
+            document.getElementById('uploadBtn').disabled = false;
+            document.getElementById('uploadProgress').classList.add('hidden');
+            document.getElementById('progressBar').style.width = '0%';
+            selectedFiles = [];
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById('fileInput').value = '';
+            toast(`Successfully uploaded ${uploaded} images to cloud! ☁️`);
+            renderGallery();
+            updateStats();
+        }
+
+        window.vote = async function(id) {
+            if (userVotes[id]) {
+                toast('You already voted for this!', 'error');
+                return;
+            }
+            const img = images.find(i => i.id === id);
+            if (img) {
+                img.votes++;
+                await saveToJSONBin(images);
+                userVotes[id] = true;
+                localStorage.setItem('artcontest_pro_votes', JSON.stringify(userVotes));
+                toast('Vote counted! ❤️');
+                renderGallery();
+                updateStats();
+            }
+        }
+
+        window.deleteImage = async function(id) {
+            if (!isAdmin) return;
+            if (confirm('Delete this image permanently?')) {
+                images = images.filter(i => i.id!== id);
+                await saveToJSONBin(images);
+                toast('Image deleted');
+                renderGallery();
+                updateStats();
+            }
+        }
+
+        window.setSort = function(type) {
+            currentSort = type;
+            document.getElementById('sortVotes').className = type === 'votes' 
+               ? 'px-6 py-3 rounded-xl bg-purple-500/20 border border-purple-500/50 font-semibold'
+                : 'px-6 py-3 rounded-xl glass-card hover:bg-white/10 transition font-semibold';
+            document.getElementById('sortNewest').className = type === 'newest'
+               ? 'px-6 py-3 rounded-xl bg-purple-500/20 border border-purple-500/50 font-semibold'
+                : 'px-6 py-3 rounded-xl glass-card hover:bg-white/10 transition font-semibold';
+            renderGallery();
+        }
+
+        document.getElementById('searchInput').oninput = () => renderGallery();
+
+        function renderGallery() {
+            const gallery = document.getElementById('gallery');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filtered = images.filter(img => img.name.toLowerCase().includes(search));
+            
+            if (filtered.length === 0) {
+                gallery.innerHTML = `
+                    <div class="glass-card rounded-3xl p-16 text-center col-span-full slide-up">
+                        <i class="fas fa-image text-8xl mb-6 text-purple-400 opacity-50"></i>
+                        <p class="text-2xl text-purple-200">${images.length === 0? 'No images yet. Admin can upload the first ones!' : 'No images match your search'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const sorted = [...filtered].sort((a, b) => 
+                currentSort === 'votes'? b.votes - a.votes : b.timestamp - a.timestamp
+            );
+            
+            gallery.innerHTML = sorted.map((img, index) => `
+                <div class="image-card glass-card rounded-3xl overflow-hidden slide-up" style="animation-delay: ${index * 0.05}s">
+                    ${index < 3 && currentSort === 'votes'? `<div class="rank-badge">#${index + 1}</div>` : ''}
+                    <img src="${img.url}" alt="${img.name}" class="w-full h-80 object-cover" loading="lazy">
+                    <div class="image-overlay">
+                        <div class="w-full">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="text-3xl font-black">${img.votes} <i class="fas fa-heart text-pink-400"></i></div>
+                                ${isAdmin? `<button onclick="deleteImage(${img.id})" class="glass-card px-4 py-2 rounded-xl hover:bg-red-500/20 transition"><i class="fas fa-trash"></i></button>` : ''}
+                            </div>
+                            <button onclick="vote(${img.id})" 
+                                class="vote-btn w-full py-4 rounded-2xl font-bold text-lg ${userVotes[img.id]? 'voted cursor-not-allowed' : ''}"
+                                ${userVotes[img.id]? 'disabled' : ''}>
+                                <i class="fas ${userVotes[img.id]? 'fa-check' : 'fa-heart'}"></i>
+                                ${userVotes[img.id]? 'Voted' : 'Vote Now'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const totalV = images.reduce((sum, img) => sum + img.votes, 0);
+            document.getElementById('statImages').textContent = images.length;
+            document.getElementById('statVotes').textContent = totalV;
+        }
+
+        // Init
+        loadFromJSONBin().then(data => {
+            images = data;
+            renderGallery();
+            updateStats();
+        });
+
+        setInterval(async () => {
+            images = await loadFromJSONBin();
+            renderGallery();
+            updateStats();
+        }, 10000);
+    </script>
+</body>
+</html>
