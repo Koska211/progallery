@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>ProGallery Museum</title>
+</head>
+<body style="margin:0;font-family:Arial;background:linear-gradient(135deg,#1a1a2e,#0f3460);min-height:100vh;color:#fff;padding:20px;">
+    <div style="max-width:1200px;margin:0 auto;">
+        <div style="text-align:center;padding:40px 0;border-bottom:4px solid #FFD700;margin-bottom:30px;">
+            <h1 style="font-size:3rem;color:#FFD700;margin-bottom:10px;">🏛️ ProGallery Museum</h1>
+            <p style="font-size:1.3rem;color:#FFD700;">Digital Art Collection | Every artwork 1€</p>
+            <p style="margin-top:15px;font-size:1rem;">Curator: Ljupcho Janeski | PayPal: @LjupchoJaneski</p>
+        </div>
+
+        <button onclick="document.getElementById('admin').style.display='block'" style="background:#FFD700;color:#1a1a2e;border:none;padding:15px 30px;font-size:18px;font-weight:bold;border-radius:25px;cursor:pointer;margin:10px;">🔐 Admin Panel</button>
+        
+        <div id="admin" style="display:none;background:white;color:#333;padding:30px;border-radius:20px;margin:20px 0;border:3px solid #f5576c;">
+            <h2 style="color:#f5576c;text-align:center;">🔐 Admin Login</h2>
+            <div style="text-align:center;max-width:400px;margin:0 auto;">
+                <input type="password" id="pass" placeholder="Enter password" style="width:100%;padding:15px;margin:10px 0;border:2px solid #FFD700;border-radius:10px;font-size:16px;">
+                <button onclick="if(document.getElementById('pass').value==='admin123'){document.getElementById('dash').style.display='block';document.getElementById('login').style.display='none';alert('✅ Logged in!')}else{alert('Wrong password!')}" style="background:#f5576c;color:white;padding:15px 40px;border:none;border-radius:10px;font-size:18px;font-weight:bold;cursor:pointer;width:100%;">Login</button>
+            </div>
+            <div id="dash" style="display:none;margin-top:20px;">
+                <h2 style="color:#f5576c;text-align:center;">👑 Dashboard Works!</h2>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0;">
+                    <div style="background:#1a1a2e;color:#FFD700;padding:20px;border-radius:15px;text-align:center;border:2px solid #FFD700;">
+                        <span style="font-size:2rem;font-weight:bold;color:white;display:block;">0€</span>
+                        <span>Revenue</span>
+                    </div>
+                    <div style="background:#1a1a2e;color:#FFD700;padding:20px;border-radius:15px;text-align:center;border:2px solid #FFD700;">
+                        <span style="font-size:2rem;font-weight:bold;color:white;display:block;">5</span>
+                        <span>Artworks</span>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('admin').style.display='none'" style="background:#f5576c;color:white;width:100%;padding:15px;border:none;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer;">🚪 Close</button>
+            </div>
+        </div>
+
+        <div style="background:white;color:#333;padding:40px;border-radius:20px;text-align:center;margin:30px 0;border:3px solid #FFD700;">
+            <h2 style="color:#1a1a2e;margin-bottom:15px;">🎨 Submit Your Artwork</h2>
+            <button onclick="window.open('https://www.paypal.com/paypalme/LjupchoJaneski/1EUR','_blank');alert('After payment, contact admin!')" style="background:#FFD700;color:#1a1a2e;border:none;padding:20px 60px;font-size:22px;font-weight:bold;border-radius:50px;cursor:pointer;">📤 Upload - Pay 1€</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;">
+            <div style="background:white;border-radius:20px;overflow:hidden;border:3px solid #FFD700;">
+                <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800" style="width:100%;height:400px;object-fit:cover;">
+                <div style="padding:20px;color:#333;">
+                    <div style="background:#FFD700;color:#1a1a2e;padding:10px 20px;border-radius:20px;font-weight:bold;display:inline-block;margin-bottom:10px;">1€</div>
+                    <h3>Digital Artwork #1</h3>
+                    <button onclick="window.open('https://www.paypal.com/paypalme/LjupchoJaneski/1EUR','_blank');alert('Thank you!')" style="background:#FFD700;color:#1a1a2e;width:100%;padding:15px;border:none;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:10px;">💰 ACQUIRE FOR 1€</button>
+                </div>
+            </div>
+            <div style="background:white;border-radius:20px;overflow:hidden;border:3px solid #FFD700;">
+                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800" style="width:100%;height:400px;object-fit:cover;">
+                <div style="padding:20px;color:#333;">
+                    <div style="background:#FFD700;color:#1a1a2e;padding:10px 20px;border-radius:20px;font-weight:bold;display:inline-block;margin-bottom:10px;">1€</div>
+                    <h3>Digital Artwork #2</h3>
+                    <button onclick="window.open('https://www.paypal.com/paypalme/LjupchoJaneski/1EUR','_blank');alert('Thank you!')" style="background:#FFD700;color:#1a1a2e;width:100%;padding:15px;border:none;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:10px;">💰 ACQUIRE FOR 1€</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
