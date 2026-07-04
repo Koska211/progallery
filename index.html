@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ProGallery AI 2.0 - AI Art Contest</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--grad:linear-gradient(135deg,#667eea 0%,#764ba2 100%);--gold:#ffd700;--green:#00ff88;--red:#ff4757}
+body{background:var(--grad);color:#fff;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh}
+nav{position:fixed;top:0;width:100%;background:rgba(0,0,0,.6);backdrop-filter:blur(10px);padding:15px 0;z-index:100;border-bottom:1px solid rgba(255,255,255,.1)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:1.8rem;font-weight:900;display:flex;align-items:center;gap:10px}
+.logo span{background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-right{display:flex;gap:15px;align-items:center}
+.admin-btn,.pro-btn{background:rgba(255,215,0,.2);border:1px solid var(--gold);color:var(--gold);padding:8px 18px;border-radius:20px;cursor:pointer;font-size:.9rem;font-weight:700}
+.pro-btn{background:rgba(0,255,136,.2);border-color:var(--green);color:var(--green)}
+.header{text-align:center;padding:140px 20px 60px}
+.promo-banner{background:linear-gradient(90deg,#ff4757,#ff6348);padding:15px;text-align:center;font-weight:700;font-size:1.1rem;margin-bottom:20px;border-radius:15px;max-width:800px;margin-left:auto;margin-right:auto}
+h1{font-size:4rem;font-weight:900;margin-bottom:15px}
+.subtitle{font-size:1.3rem;margin-bottom:10px;opacity:.9}
+.prize{color:var(--gold);font-size:1.4rem;margin-bottom:30px;font-weight:700}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;max-width:900px;margin:0 auto 40px}
+.plan-card{background:rgba(255,255,255,.15);backdrop-filter:blur(15px);border-radius:25px;padding:35px;border:2px solid rgba(255,255,255,.2);position:relative}
+.plan-card.pro{border-color:var(--green);box-shadow:0 0 30px rgba(0,255,136,.3)}
+.plan-badge{position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:var(--green);color:#667eea;padding:8px 20px;border-radius:20px;font-weight:900;font-size:.85rem}
+.plan-name{font-size:1.8rem;font-weight:900;margin-bottom:10px}
+.plan-price{font-size:3rem;font-weight:900;color:var(--gold);margin:15px 0}
+.plan-price.pro{color:var(--green)}
+.plan-period{font-size:1rem;opacity:.8}
+.plan-features{list-style:none;margin:25px 0;text-align:left}
+.plan-features li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.plan-features li::before{content:'✓ ';color:var(--green);font-weight:900;margin-right:8px}
+.plan-btn{width:100%;padding:18px;border:none;border-radius:50px;font-size:1.1rem;font-weight:800;cursor:pointer;margin-top:15px}
+.plan-btn.basic{background:#fff;color:#667eea}
+.plan-btn.pro{background:var(--green);color:#667eea}
+.stats{display:flex;justify-content:center;gap:25px;margin-bottom:35px;flex-wrap:wrap}
+.stat{background:rgba(255,255,255,.15);backdrop-filter:blur(10px);padding:20px 30px;border-radius:20px;border:1px solid rgba(255,255,255,.2)}
+.stat-num{font-size:2.5rem;font-weight:900;color:var(--gold)}
+.stat-label{font-size:.9rem;margin-top:5px;opacity:.9}
+.container{max-width:1400px;margin:0 auto;padding:0 20px}
+.box{background:rgba(255,255,255,.1);backdrop-filter:blur(15px);border-radius:20px;padding:40px;margin:0 auto 50px;border:1px solid rgba(255,255,255,.2)}
+.box h3{color:var(--gold);margin-bottom:25px;font-size:2rem;text-align:center}
+.controls{display:flex;justify-content:space-between;align-items:center;margin:30px 0;flex-wrap:wrap;gap:15px}
+.search-box{flex:1;max-width:400px}
+.search-box input{width:100%;padding:12px 15px;border-radius:25px;border:2px solid rgba(255,255,255,.3);background:rgba(0,0,0,.3);color:#fff;font-size:1rem}
+.categories{display:flex;gap:10px;flex-wrap:wrap}
+.cat-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:10px 20px;border-radius:20px;cursor:pointer;font-weight:700}
+.cat-btn.active,.cat-btn:hover{background:var(--gold);color:#667eea}
+.sort-btn{background:rgba(0,0,0,.4);border:1px solid var(--gold);color:var(--gold);padding:10px 20px;border-radius:20px;cursor:pointer;font-weight:700}
+#gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:30px;padding:20px 0}
+.card{border-radius:20px;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.4);background:rgba(255,255,255,.1);backdrop-filter:blur(10px);position:relative;border:1px solid rgba(255,255,255,.2)}
+.card img{width:100%;height:380px;object-fit:cover;display:block}
+.new-badge{position:absolute;top:15px;left:15px;background:var(--red);color:#fff;padding:6px 12px;border-radius:15px;font-size:.75rem;font-weight:900;z-index:2}
+.card-badge{position:absolute;top:15px;left:15px;background:rgba(0,0,0,.7);padding:8px 15px;border-radius:20px;font-size:.85rem;font-weight:700;border:1px solid var(--gold)}
+.price{position:absolute;top:15px;right:15px;background:var(--gold);color:#667eea;padding:8px 18px;border-radius:20px;font-weight:900}
+.info{padding:20px;background:rgba(0,0,0,.6)}
+.title{font-weight:700;font-size:1.1rem;margin-bottom:5px}
+.upload-date{font-size:.8rem;opacity:.6;margin-bottom:12px}
+.card-actions{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.vote-btn{background:var(--gold);color:#667eea;border:none;padding:10px 22px;border-radius:20px;font-weight:800;cursor:pointer}
+.vote-btn:disabled{opacity:.5;cursor:not-allowed}
+.votes{font-weight:800;font-size:1.1rem}
+.share-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;padding:8px 15px;border-radius:15px;cursor:pointer;font-size:.9rem}
+#fileInput{display:none}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:2000;justify-content:center;align-items:center}
+.modal.active{display:flex}
+.modal-box{background:linear-gradient(135deg,#fff 0%,#f5f5f5 100%);color:#333;padding:40px;border-radius:25px;text-align:center;max-width:550px;width:90%}
+.modal-box h2{color:#667eea;margin-bottom:15px;font-size:2rem}
+.pay-link{display:block;padding:18px 30px;border-radius:50px;text-decoration:none;font-weight:700;margin:10px 0;font-size:1.1rem}
+.confirm-btn{background:var(--grad);color:white;border:none;padding:18px 40px;border-radius:50px;cursor:pointer;font-weight:700;margin-top:15px;font-size:1.1rem}
+.close-btn{background:transparent;color:#999;border:2px solid #ddd;padding:10px 30px;border-radius:50px;cursor:pointer;margin-top:10px}
+.admin-input{padding:15px;border:2px solid #ddd;border-radius:15px;width:100%;margin:15px 0;font-size:1rem}
+footer{background:rgba(0,0,0,.6);padding:40px 20px;margin-top:80px;text-align:center}
+@media(max-width:768px){h1{font-size:2.5rem}#gallery{grid-template-columns:1fr}.plans{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+<div class="nav-inner">
+<div class="logo">🤖 ProGallery <span>AI 2.0</span></div>
+<div class="nav-right">
+<button class="pro-btn" onclick="showProModal()">⚡ Go Pro</button>
+<button class="admin-btn" onclick="adminLogin()">Admin</button>
+</div>
+</div>
+</nav>
+
+<div class="header">
+<div class="promo-banner">🎉 LAUNCH SPECIAL: First Week FREE + Free Ads for First Month! 🎉</div>
+<h1>ProGallery AI 2.0</h1>
+<p class="subtitle">Next-Gen AI Art Contest · Vote · Win Big</p>
+<p class="prize">🏆 GRAND PRIZE: 100€ + Featured Artist Badge</p>
+
+<div class="plans">
+<div class="plan-card">
+<div class="plan-name">Basic</div>
+<div class="plan-price">1€<span class="plan-period">/upload</span></div>
+<ul class="plan-features">
+<li>Pay per upload</li>
+<li>Community voting</li>
+<li>Chance to win 100€</li>
+<li>Standard support</li>
+</ul>
+<button class="plan-btn basic" onclick="startPayment('basic')">Start Basic</button>
+</div>
+
+<div class="plan-card pro">
+<div class="plan-badge">BEST VALUE</div>
+<div class="plan-name">Pro Artist</div>
+<div class="plan-price pro">10€<span class="plan-period">/month</span></div>
+<ul class="plan-features">
+<li><strong>30 uploads included</strong></li>
+<li><strong>First week FREE trial</strong></li>
+<li><strong>Free featured ads (1st month)</strong></li>
+<li>Priority support</li>
+<li>Pro badge on profile</li>
+</ul>
+<button class="plan-btn pro" onclick="startPayment('pro')">Start Pro Trial</button>
+</div>
+</div>
+
+<div class="stats">
+<div class="stat"><div class="stat-num" id="totalImages">12</div><div class="stat-label">AI Artworks</div></div>
+<div class="stat"><div class="stat-num" id="totalVotes">3.4K</div><div class="stat-label">Total Votes</div></div>
+<div class="stat"><div class="stat-num">100€</div><div class="stat-label">Monthly Prize</div></div>
+<div class="stat"><div class="stat-num">156</div><div class="stat-label">Artists</div></div>
+</div>
+</div>
+
+<div class="container">
+<div class="box">
+<h3>✨ Gallery</h3>
+<div class="controls">
+<div class="search-box">
+<input type="text" id="searchInput" placeholder="🔍 Search artworks..." oninput="filterGallery()">
+</div>
+<div class="categories">
+<button class="cat-btn active" onclick="filterCat('all')">All</button>
+<button class="cat-btn" onclick="filterCat('space')">Space</button>
+<button class="cat-btn" onclick="filterCat('cyber')">Cyberpunk</button>
+<button class="cat-btn" onclick="filterCat('abstract')">Abstract</button>
+<button class="cat-btn" onclick="filterCat('portrait')">Portrait</button>
+<button class="sort-btn" onclick="toggleSort()" id="sortBtn">📅 Newest First</button>
+</div>
+</div>
+<div id="gallery"></div>
+</div>
+</div>
+
+<footer>
+<p><strong>ProGallery AI 2.0 © 2026</strong></p>
+<p style="margin:15px 0;opacity:.8">The Ultimate AI Art Battle Platform</p>
+</footer>
+
+<input type="file" id="fileInput" accept="image/*">
+
+<div class="modal" id="payModal">
+<div class="modal-box">
+<h2 id="modalTitle">💰 Entry Fee: 1€</h2>
+<p style="color:#666;margin-bottom:20px" id="modalDesc">Support the contest & upload your art:</p>
+<a href="https://www.paypal.com/paypalme/LjupchoJaneski/1EUR" target="_blank" class="pay-link" style="background:#0070ba;color:#fff" id="payLink">💳 PayPal - Fast & Secure</a>
+<div id="proInfo" style="display:none;background:#f0fff4;padding:15px;border-radius:15px;margin:20px 0;text-align:left">
+<strong style="color:#00a854">✓ Pro Benefits:</strong><br>
+- 30 uploads included (save 20€!)<br>
+- First week FREE - cancel anytime<br>
+- Free homepage ads for 1 month<br>
+- Priority support
+</div>
+<button class="confirm-btn" onclick="confirmPayment()">✓ I've Paid, Upload Now</button>
+<br><button class="close-btn" onclick="closeModal()">Cancel</button>
+</div>
+</div>
+
+<div class="modal" id="proModal">
+<div class="modal-box">
+<h2>⚡ Go Pro - 10€/month</h2>
+<p style="color:#666;margin-bottom:20px">Unlock 30 uploads + Free Trial + Free Ads!</p>
+<a href="https://www.paypal.com/paypalme/LjupchoJaneski/10EUR" target="_blank" class="pay-link" style="background:#00ff88;color:#667eea">💳 PayPal - Start Free Trial</a>
+<div style="background:#f0fff4;padding:20px;border-radius:15px;margin:20px 0;text-align:left">
+<strong style="color:#00a854">🎁 LAUNCH OFFER:</strong><br>
+✓ First week 100% FREE<br>
+✓ 30 uploads included<br>
+✓ Free featured ads (1st month)<br>
+✓ Pro badge + analytics<br>
+✓ Cancel anytime
+</div>
+<button class="confirm-btn" onclick="confirmPayment()">✓ I've Paid, Activate Pro</button>
+<br><button class="close-btn" onclick="closeModal()">Cancel</button>
+</div>
+</div>
+
+<div class="modal" id="adminModal">
+<div class="modal-box">
+<h2>🔐 Admin Access</h2>
+<p style="color:#666;margin-bottom:15px">Enter admin password:</p>
+<input type="password" id="adminPass" class="admin-input" placeholder="Password" onkeypress="if(event.key==='Enter')checkAdmin()">
+<button class="confirm-btn" onclick="checkAdmin()">Login as Admin</button>
+<br><button class="close-btn" onclick="closeModal()">Cancel</button>
+</div>
+</div>
+
+<script>
+const ADMIN_PASSWORD = 'progallery2026';
+let isAdmin = false;
+let isPro = localStorage.getItem('isPro')==='true';
+let proUploadsLeft = parseInt(localStorage.getItem('proUploadsLeft')||'0');
+let currentCategory = 'all';
+let searchQuery = '';
+let sortBy = 'newest';
+let currentPlan = 'basic';
+
+// 12 HARDCODED СЛИКИ - СЕКOГАШ СЕ ГЛЕДААТ!
+const d=[
+{id:12,url:'https://images.pexels.com/photos/8721342/pexels-photo-8721342.jpeg?auto=compress&cs=tinysrgb&w=800',title:'Cyber Warrior',votes:132,cat:'cyber',date:Date.now()-1800000},
+{id:11,url:'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',title:'Deep Space Explorer',votes:154,cat:'space',date:Date.now()-3600000*2},
+{id:10,url:'https://images.pexels.com/photos/8721318/pexels-photo-8721318.jpeg?auto=compress&cs=tinysrgb&w=800',title:'Digital Dreams',votes:176,cat:'abstract',date:Date.now()-3600000*4},
+{id:9,url:'https://images.unsplash.com/photo-1614314107768-75d0e8a98d4e?w=800&q=80',title:'Saturn Rings',votes:198,cat:'space',date:Date.now()-3600000*8},
+{id:8,url:'https://images.pexels.com/photos/8721342/pexels-photo-8721342.jpeg?auto=compress&cs=tinysrgb&w=800',title:'Neon Tokyo Night',votes:223,cat:'cyber',date:Date.now()-3600000*12},
+{id:7,url:'https://images.pexels.com/photos/7567529/pexels-photo-7567529.jpeg?auto=compress&cs=tinysrgb&w=800',title:'Space Station Alpha',votes:245,cat:'space',date:Date.now()-86400000},
+{id:6,url:'https://images.pexels.com/photos/8721318/pexels-photo-8721318.jpeg?auto=compress&cs=tinysrgb&w=800',title:'Abstract Dimensions',votes:267,cat:'abstract',date:Date.now()-86400000*2},
+{id:5,url:'https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&q=80',title:'Astronaut Vision',votes:298,cat:'space',date:Date.now()-86400000*3},
+{id:4,url:'https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=800',title:'AI Robot Soul',votes:334,cat:'portrait',date:Date.now()-86400000*4},
+{id:3,url:'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&q=80',title:'Milky Way Dreams',votes:356,cat:'space',date:Date.now()-86400000*5},
+{id:2,url:'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=800',title:'Cyberpunk City 2077',votes:389,cat:'cyber',date:Date.now()-86400000*6},
+{id:1,url:'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&q=80',title:'Cosmic Nebula X',votes:412,cat:'space',date:Date.now()-86400000*7}
+];
+
+let u=JSON.parse(localStorage.getItem('userImages')||'[]');
+let voted=JSON.parse(localStorage.getItem('votedImages')||'[]');
+const g=document.getElementById('gallery'),f=document.getElementById('fileInput'),pm=document.getElementById('payModal'),am=document.getElementById('adminModal'),prm=document.getElementById('proModal');
+
+function startPayment(plan){
+  currentPlan=plan;
+  if(isAdmin){
+    f.click();
+  }else if(plan==='pro'){
+    prm.classList.add('active');
+  }else{
+    document.getElementById('modalTitle').textContent='💰 Entry Fee: 1€';
+    document.getElementById('modalDesc').textContent='Support the contest & upload your art:';
+    document.getElementById('payLink').href='https://www.paypal.com/paypalme/LjupchoJaneski/1EUR';
+    document.getElementById('proInfo').style.display='none';
+    pm.classList.add('active');
+  }
+}
+
+function showProModal(){prm.classList.add('active')}
+function adminLogin(){am.classList.add('active')}
+function checkAdmin(){
+  if(document.getElementById('adminPass').value===ADMIN_PASSWORD){
+    isAdmin=true;closeModal();
+    document.querySelector('.admin-btn').textContent='Admin ✓';
+    document.querySelector('.admin-btn').style.background='var(--gold)';
+    document.querySelector('.admin-btn').style.color='#667eea';
+    alert('✅ Admin mode activated!');
+  }else{alert('❌ Wrong password!')}
+}
+function closeModal(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('active'))}
+
+function confirmPayment(){
+  closeModal();
+  if(currentPlan==='pro'){
+    isPro=true;
+    proUploadsLeft=30;
+    localStorage.setItem('isPro','true');
+    localStorage.setItem('proUploadsLeft','30');
+    document.querySelector('.pro-btn').textContent=`⚡ Pro (${proUploadsLeft}/30)`;
+    alert('🎉 Pro activated! 30 uploads + FREE trial 7 days!');
+  }
+  f.click();
+}
+
+function toggleSort(){
+  sortBy = sortBy==='newest'?'votes':'newest';
+  document.getElementById('sortBtn').textContent = sortBy==='newest'?'📅 Newest First':'🔥 Most Voted';
+  render();
+}
+
+function vote(id){
+  if(voted.includes(id))return;
+  voted.push(id);
+  localStorage.setItem('votedImages',JSON.stringify(voted));
+  let img=[...u,...d].find(i=>i.id===id);
+  if(img){
+    img.votes=(img.votes||0)+1;
+    localStorage.setItem('userImages',JSON.stringify(u));
+    render();
+  }
+}
+
+function shareArt(id,title){
+  const url=`https://koska211.github.io/progallery/#art-${id}`;
+  if(navigator.share){
+    navigator.share({title:`Vote for: ${title}`,text:'Check out this AI art!',url:url});
+  }else{
+    navigator.clipboard.writeText(url);
+    alert('🔗 Link copied!');
+  }
+}
+
+function filterCat(cat){
+  currentCategory=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+function filterGallery(){
+  searchQuery=document.getElementById('searchInput').value.toLowerCase();
+  render();
+}
+
+f.onchange=e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  if(isPro && proUploadsLeft>0){
+    proUploadsLeft--;
+    localStorage.setItem('proUploadsLeft',proUploadsLeft);
+    document.querySelector('.pro-btn').textContent=`⚡ Pro (${proUploadsLeft}/30)`;
+  }else if(isPro && proUploadsLeft===0){
+    alert('⚠️ Pro uploads used! Renew subscription.');
+    return;
+  }
+  const r=new FileReader();
+  r.onload=ev=>{
+    u.unshift({
+      id:Date.now(),
+      url:ev.target.result,
+      title:isAdmin?'⭐ Admin Upload':isPro?'⚡ Pro Upload':'Your AI Art',
+      votes:0,
+      cat:'abstract',
+      date:Date.now()
+    });
+    localStorage.setItem('userImages',JSON.stringify(u));
+    render();
+    alert(`✅ Uploaded! ${isPro?`Pro: ${proUploadsLeft} left`:''}`);
+  };
+  r.readAsDataURL(file);
+};
+
+function render(){
+  g.innerHTML='';
+  let all=[...u,...d];
+  if(currentCategory!=='all')all=all.filter(i=>i.cat===currentCategory);
+  if(searchQuery)all=all.filter(i=>i.title.toLowerCase().includes(searchQuery));
+  if(sortBy==='newest'){
+    all.sort((a,b)=>(b.date||b.id)-(a.date||a.id));
+  }else{
+    all.sort((a,b)=>(b.votes||0)-(a.votes||0));
+  }
+  let tv=0;
+  const now=Date.now();
+  all.forEach(i=>{
+    tv+=(i.votes||0);
+    const hasV=voted.includes(i.id);
+    const isNew=(now-(i.date||i.id))<86400000;
+    const c=document.createElement('div');
+    c.className='card';
+    const dateStr=new Date(i.date||i.id).toLocaleDateString('mk-MK');
+    c.innerHTML=`
+      ${isNew?'<div class="new-badge">NEW</div>':''}
+      <div class="card-badge">${i.cat.toUpperCase()}</div>
+      <img src="${i.url}" alt="${i.title}">
+      <div class="price">1€</div>
+      <div class="info">
+        <div class="title">${i.title}</div>
+        <div class="upload-date">📅 ${dateStr}</div>
+        <div class="card-actions">
+          <button class="vote-btn ${hasV?'voted':''}" onclick="vote(${i.id})" ${hasV?'disabled':''}>${hasV?'Voted':'Vote'}</button>
+          <div class="votes">❤️ ${i.votes||0}</div>
+          <button class="share-btn" onclick="shareArt(${i.id},'${i.title}')">Share</button>
+        </div>
+      </div>`;
+    g.appendChild(c);
+  });
+  document.getElementById('totalImages').textContent=[...u,...d].length;
+  document.getElementById('totalVotes').textContent=tv.toLocaleString();
+}
+
+render();
+if(isPro){document.querySelector('.pro-btn').textContent=`⚡ Pro (${proUploadsLeft}/30)`}
+</script>
+</body>
+</html>
