@@ -1,40 +1,77 @@
 <!DOCTYPE html>
 <html lang="mk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ProGallery</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0a0a;
-      color: #fff;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      margin: 20px 0 40px;
-      font-size: 2.5rem;
-      background: linear-gradient(90deg, #ff3d00, #ff9100);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-   .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-   .card {
-      background: #1a1a1a;
-      border-radius: 16px;
-      overflow: hidden;
-      transition: transform 0.3s ease;
-      border: 1px solid #2a2a2a;
-    }
-   .card:hover { transform: translateY(-8px); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProGallery</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; color: #fff; font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #ff6b35; text-align: center; margin-bottom: 30px; font-size: 2.5rem; }
+        #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+        #gallery img { width: 100%; height: 250px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: transform 0.3s; }
+        #gallery img:hover { transform: scale(1.05); }
+        #uploadBtn { position: fixed; bottom: 30px; right: 30px; background: #ff6b35; color: white; border: none; width: 60px; height: 60px; border-radius: 50%; font-size: 2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(255,107,53,0.4); }
+        #uploadBtn:hover { background: #ff8555; }
+        #fileInput { display: none; }
+        .empty { text-align: center; color: #666; margin-top: 100px; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+    <h1>ProGallery</h1>
+    <div id="gallery"></div>
+    <div class="empty" id="emptyMsg">Нема слики во галеријата.</div>
+    
+    <button id="uploadBtn">+</button>
+    <input type="file" id="fileInput" accept="image/*" multiple>
+
+    <script>
+        const gallery = document.getElementById('gallery');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const emptyMsg = document.getElementById('emptyMsg');
+
+        let images = JSON.parse(localStorage.getItem('galleryImages') || '[]');
+        renderGallery();
+
+        uploadBtn.onclick = () => fileInput.click();
+
+        fileInput.onchange = (e) => {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    images.push(event.target.result);
+                    localStorage.setItem('galleryImages', JSON.stringify(images));
+                    renderGallery();
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        function renderGallery() {
+            gallery.innerHTML = '';
+            if (images.length === 0) {
+                emptyMsg.style.display = 'block';
+            } else {
+                emptyMsg.style.display = 'none';
+                images.forEach((img, index) => {
+                    const imgEl = document.createElement('img');
+                    imgEl.src = img;
+                    imgEl.onclick = () => {
+                        if (confirm('Избриши ја сликата?')) {
+                            images.splice(index, 1);
+                            localStorage.setItem('galleryImages', JSON.stringify(images));
+                            renderGallery();
+                        }
+                    };
+                    gallery.appendChild(imgEl);
+                });
+            }
+        }
+    </script>
+</body>
+</html>   .card:hover { transform: translateY(-8px); }
    .card img {
       width: 100%;
       height: 250px;
