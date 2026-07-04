@@ -3,38 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProGallery</title>
+    <title>ProGallery - Premium галерија</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0a0a0a;
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            padding: 20px;
+            min-height: 100vh;
         }
+
+        /* LANGUAGE SWITCHER */
+       .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+       .lang-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,107,53,0.3);
+            color: #999;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+       .lang-btn.active,.lang-btn:hover {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+
+        /* HEADER - КАКО ПРВИОТ САЈТ */
        .header {
             text-align: center;
-            padding: 40px 20px 60px;
+            padding: 80px 20px 60px;
+            position: relative;
+            background: radial-gradient(ellipse at top, rgba(255,107,53,0.15), transparent 70%);
         }
         h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #ff6b35, #ff8555);
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ff6b35, #ff8555, #ff6b35);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+        @keyframes shine {
+            to { background-position: 200% center; }
         }
        .subtitle {
-            color: #999;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
+            color: #aaa;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            font-weight: 300;
         }
        .upload-btn {
-            background: #ff6b35;
+            background: linear-gradient(90deg, #ff6b35, #ff8555);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 30px rgba(255,107,53,0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+       .upload-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 40px rgba(255,107,53,0.6);
+        }
+
+       .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+
+        /* GALLERY GRID */
+        #gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 40px 0 80px;
+        }
+       .img-card {
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            background: #1a1a1a;
+        }
+       .img-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(255,107,53,0.4);
+        }
+       .img-card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s;
+        }
+       .img-card:hover img {
+            transform: scale(1.1);
+        }
+       .price {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,107,53,0.95);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 800;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* MODAL */
+        #fileInput { display: none; }
+       .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.97);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+       .modal.active { display: flex; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+       .modal-content {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            padding: 50px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 450px;
+            border: 2px solid #ff6b35;
+            box-shadow: 0 20px 60px rgba(255,107,53,0.3);
+        }
+       .modal h2 {
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+       .pay-link {
+            background: #0070ba;
+            color: white;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 700;
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+       .pay-link:hover { transform: scale(1.05); }
+       .confirm-btn {
+            background: linear-gradient(90deg, #25D366, #20ba5a);
             color: white;
             border: none;
             padding: 16px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
             font-size: 1.1rem;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+       .confirm-btn:hover { transform: scale(1.05); }
+       .close-btn {
+            background: transparent;
+            color: #666;
+            border: 1px solid #333;
+            padding: 12px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+       .close-btn:hover { border-color: #ff6b35; color: #ff6b35; }
+    </style>
+</head>
+<body>
+    <!-- LANGUAGE SWITCHER -->
+    <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('mk')">МК</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('de')">DE</button>
+    </div>
+
+    <div class="header">
+        <h1 data-lang="title">ProGallery</h1>
+        <p class="subtitle" data-lang="subtitle">Премиум галерија · Качи ја твојата слика за 1€</p>
+        <button class="upload-btn" onclick="startPayment()" data-lang="uploadBtn">+ Качи слика</button>
+    </div>
+
+    <div class="container">
+        <div id="gallery"></div>
+    </div>
+
+    <input type="file" id="fileInput" accept="image/*">
+
+    <div class="modal" id="payModal">
+        <div class="modal-content">
+            <h2 data-lang="modalTitle">Плаќање 1€</h2>
+            <p style="color: #999; margin-bottom: 25px;" data-lang="modalText">За да качиш слика, плати 1€ преку PayPal:</p>
+
+            <a href="https://www.paypal.com/paypalme/ТВОЈ_ЈУЗЕРНЕЈМ/1EUR"
+               target="_blank"
+               class="pay-link" data-lang="payBtn">
+               Плати со PayPal
+            </a>
+
+            <p style="font-size: 0.9rem; color: #666; margin: 25px 0;" data-lang="afterPay">После плаќање:</p>
+            <button class="confirm-btn" onclick="confirmPayment()" data-lang="confirmBtn">
+                ✓ Платив, качи слика
+            </button>
+            <br>
+            <button class="close-btn" onclick="closeModal()" data-lang="cancelBtn">Откажи</button>
+        </div>
+    </div>
+
+    <script>
+        // ПРЕВОДИ
+        const translations = {
+            mk: {
+                title: "ProGallery",
+                subtitle: "Премиум галерија · Качи ја твојата слика за 1€",
+                uploadBtn: "+ Качи слика",
+                modalTitle: "Плаќање 1€",
+                modalText: "За да качиш слика, плати 1€ преку PayPal:",
+                payBtn: "Плати со PayPal",
+                afterPay: "После плаќање:",
+                confirmBtn: "✓ Платив, качи слика",
+                cancelBtn: "Откажи",
+                alertUploaded: "Сликата е качена! 🎉"
+            },
+            en: {
+                title: "ProGallery",
+                subtitle: "Premium Gallery · Upload your image for 1€",
+                uploadBtn: "+ Upload Image",
+                modalTitle: "Payment 1€",
+                modalText: "To upload an image, pay 1€ via PayPal:",
+                payBtn: "Pay with PayPal",
+                afterPay: "After payment:",
+                confirmBtn: "✓ Paid, upload image",
+                cancelBtn: "Cancel",
+                alertUploaded: "Image uploaded! 🎉"
+            },
+            de: {
+                title: "ProGallery",
+                subtitle: "Premium Galerie · Lade dein Bild für 1€ hoch",
+                uploadBtn: "+ Bild hochladen",
+                modalTitle: "Zahlung 1€",
+                modalText: "Um ein Bild hochzuladen, zahle 1€ über PayPal:",
+                payBtn: "Mit PayPal bezahlen",
+                afterPay: "Nach der Zahlung:",
+                confirmBtn: "✓ Bezahlt, Bild hochladen",
+                cancelBtn: "Abbrechen",
+                alertUploaded: "Bild hochgeladen! 🎉"
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'mk';
+
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.textContent === lang.toUpperCase()) btn.classList.add('active');
+            });
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                const key = el.getAttribute('data-lang');
+                el.textContent = translations[lang][key];
+            });
+            document.documentElement.lang = lang;
+        }
+
+        // ДЕМО СЛИКИ - СЕ ГЛЕДААТ СЕКОГАШ
+        const demoImages = [
+            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800',
+            'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=800',
+            'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800',
+            'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=800',
+            'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800'
+        ];
+
+        let userImages = JSON.parse(localStorage.getItem('userImages') || '[]');
+
+        const gallery = document.getElementById('gallery');
+        const fileInput = document.getElementById('fileInput');
+        const payModal = document.getElementById('payModal');
+
+        // ИНИЦИЈАЛИЗАЦИЈА
+        setLang(currentLang);
+        renderGallery();
+
+        function startPayment() {
+            payModal.classList.add('active');
+        }
+        function closeModal() {
+            payModal.classList.remove('active');
+        }
+        function confirmPayment() {
+            closeModal();
+            fileInput.click();
+        }
+
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                userImages.unshift(event.target.result);
+                localStorage.setItem('userImages', JSON.stringify(userImages));
+                renderGallery();
+                alert(translations[currentLang].alertUploaded);
+            };
+            reader.readAsDataURL(file);
+        };
+
+        function renderGallery() {
+            gallery.innerHTML = '';
+            const allImages = [...userImages,...demoImages];
+            allImages.forEach((img) => {
+                const card = document.createElement('div');
+                card.className = 'img-card';
+                card.innerHTML = `
+                    <img src="${img}" alt="Gallery">
+                    <div class="price">1€</div>
+                `;
+                gallery.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>            font-size: 1.1rem;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
