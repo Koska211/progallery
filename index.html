@@ -3,38 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProGallery</title>
+    <title>ProGallery | Качи слика за 1€</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0a0a0a; color: #fff; font-family: Arial, sans-serif; padding: 20px; }
-        h1 { color: #ff6b35; text-align: center; margin-bottom: 30px; font-size: 2.5rem; }
-        #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
-        #gallery img { width: 100%; height: 250px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: transform 0.3s; }
-        #gallery img:hover { transform: scale(1.05); }
-        #uploadBtn { position: fixed; bottom: 30px; right: 30px; background: #ff6b35; color: white; border: none; width: 60px; height: 60px; border-radius: 50%; font-size: 2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(255,107,53,0.4); }
-        #uploadBtn:hover { background: #ff8555; }
+        body { 
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); 
+            color: #fff; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
+            min-height: 100vh;
+        }
+       .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8555 100%);
+            margin-bottom: 40px;
+        }
+        h1 { 
+            font-size: 3rem; 
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+       .subtitle { font-size: 1.2rem; opacity: 0.9; margin-bottom: 25px; }
+       .pay-btn {
+            background: #fff;
+            color: #ff6b35;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+       .pay-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
+       .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+       .info-box {
+            background: rgba(255,107,53,0.1);
+            border: 2px solid #ff6b35;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        #gallery { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 60px;
+        }
+       .img-card {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+       .img-card:hover { transform: scale(1.03); }
+       .img-card img { width: 100%; height: 320px; object-fit: cover; display: block; }
+       .img-card.price-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff6b35;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
         #fileInput { display: none; }
-        .empty { text-align: center; color: #666; margin-top: 100px; font-size: 1.2rem; }
+       .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+       .modal.active { display: flex; }
+       .modal-content {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+        }
+       .close-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
-    <h1>ProGallery</h1>
-    <div id="gallery"></div>
-    <div class="empty" id="emptyMsg">Нема слики во галеријата.</div>
-    
-    <button id="uploadBtn">+</button>
-    <input type="file" id="fileInput" accept="image/*" multiple>
+    <div class="hero">
+        <h1>ProGallery</h1>
+        <p class="subtitle">Премиум галерија | Качи ја твојата слика за само 1€</p>
+        <button class="pay-btn" onclick="startPayment()">💳 Качи слика - 1€</button>
+    </div>
+
+    <div class="container">
+        <div class="info-box">
+            <h3>🎨 Како работи?</h3>
+            <p>1. Кликни "Качи слика" → 2. Плати 1€ преку PayPal → 3. Избери ја твојата слика → 4. Готово!</p>
+        </div>
+
+        <div id="gallery"></div>
+    </div>
+
+    <input type="file" id="fileInput" accept="image/*">
+
+    <div class="modal" id="payModal">
+        <div class="modal-content">
+            <h2 style="color: #ff6b35; margin-bottom: 20px;">Плаќање 1€</h2>
+            <p style="margin-bottom: 25px;">За да качиш слика, плати 1€ преку PayPal:</p>
+            
+            <!-- ТУКА СТАВИ ГО ТВОЈОТ PAYPAL ЛИНК -->
+            <a href="https://www.paypal.com/paypalme/ТВОЈ_ЈУЗЕРНЕЈМ/1EUR" 
+               target="_blank" 
+               class="pay-btn" 
+               style="display: inline-block; text-decoration: none; margin-bottom: 15px;">
+               Плати со PayPal
+            </a>
+            
+            <p style="font-size: 0.9rem; color: #888; margin: 15px 0;">После плаќање кликни доле:</p>
+            <button class="pay-btn" onclick="confirmPayment()" style="background: #25D366; color: white;">
+                ✅ Платив, качи слика
+            </button>
+            <br>
+            <button class="close-btn" onclick="closeModal()">Затвори</button>
+        </div>
+    </div>
 
     <script>
         const gallery = document.getElementById('gallery');
         const fileInput = document.getElementById('fileInput');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const emptyMsg = document.getElementById('emptyMsg');
+        const payModal = document.getElementById('payModal');
 
+        // Пример слики за да изгледа полно - смени ги со твои
         let images = JSON.parse(localStorage.getItem('galleryImages') || '[]');
+        
+        // Ако е празно, додај 3 демо слики
+        if (images.length === 0) {
+            images = [
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+                'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800',
+                'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=800'
+            ];
+            localStorage.setItem('galleryImages', JSON.stringify(images));
+        }
+        
         renderGallery();
 
-        uploadBtn.onclick = () => fileInput.click();
+        function startPayment() {
+            payModal.classList.add('active');
+        }
+
+        function closeModal() {
+            payModal.classList.remove('active');
+        }
+
+        function confirmPayment() {
+            closeModal();
+            fileInput.click();
+        }
+
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                images.unshift(event.target.result); // Додај на почеток
+                localStorage.setItem('galleryImages', JSON.stringify(images));
+                renderGallery();
+                alert('Сликата е успешно качена! 🎉');
+            };
+            reader.readAsDataURL(file);
+        };
+
+        function renderGallery() {
+            gallery.innerHTML = '';
+            images.forEach((img) => {
+                const card = document.createElement('div');
+                card.className = 'img-card';
+                card.innerHTML = `
+                    <img src="${img}" alt="Gallery image">
+                    <div class="price-tag">1€</div>
+                `;
+                gallery.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>        uploadBtn.onclick = () => fileInput.click();
 
         fileInput.onchange = (e) => {
             const files = Array.from(e.target.files);
