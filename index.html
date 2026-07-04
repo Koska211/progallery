@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ProGallery Museum</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial;background:linear-gradient(135deg,#1a1a2e,#0f3460);min-height:100vh;color:#fff;padding:80px 20px 20px}
+.top{position:fixed;top:0;left:0;right:0;background:rgba(26,26,46,0.98);padding:15px 20px;display:flex;justify-content:space-between;z-index:1000;border-bottom:2px solid #FFD700}
+.btn{background:#FFD700;color:#1a1a2e;border:none;padding:12px 25px;border-radius:25px;font-weight:bold;cursor:pointer;font-size:16px;margin:5px}
+.btn-red{background:#f5576c;color:white}
+.btn-green{background:#43e97b;color:white}
+.container{max-width:1400px;margin:0 auto}
+.header{text-align:center;padding:40px 0;border-bottom:4px solid #FFD700;margin-bottom:30px}
+.header h1{font-size:3.5rem;background:linear-gradient(135deg,#FFD700,#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.admin-banner{display:none;background:#43e97b;color:#1a1a2e;padding:20px;border-radius:15px;text-align:center;margin-bottom:20px;font-size:1.2rem;font-weight:bold}
+.admin-banner.show{display:block}
+.admin-panel{display:none;background:white;color:#333;padding:30px;border-radius:20px;margin:20px 0;border:4px solid #f5576c}
+.admin-panel.active{display:block}
+.admin-panel input{width:100%;padding:15px;margin:10px 0;border:2px solid #FFD700;border-radius:10px;font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin:20px 0}
+.stat{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#FFD700;padding:25px;border-radius:15px;text-align:center;border:3px solid #FFD700}
+.stat .num{font-size:2.5rem;font-weight:bold;color:white;display:block}
+.upload{background:white;color:#333;padding:40px;border-radius:20px;text-align:center;margin:30px 0;border:4px solid #FFD700}
+.admin-upload{background:linear-gradient(135deg,#43e97b,#00ff88);color:#1a1a2e}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:25px;margin:30px 0}
+.card{background:white;border-radius:20px;overflow:hidden;border:4px solid #FFD700;position:relative}
+.card img{width:100%;height:400px;object-fit:cover}
+.badge{position:absolute;top:15px;left:15px;padding:10px 18px;border-radius:20px;font-weight:bold}
+.badge-price{background:#FFD700;color:#1a1a2e}
+.badge-pending{background:#ff9800;color:white;top:65px}
+.badge-sold{background:#43e97b;color:white;bottom:15px}
+.badge-admin{background:#43e97b;color:#1a1a2e;top:65px}
+.card-body{padding:20px;color:#333}
+.card-body h3{font-size:1.3rem;color:#1a1a2e;margin-bottom:10px}
+.card-actions button{width:100%;margin:5px 0}
+.hidden{display:none}
+#fileAdmin,#fileUser{display:none}
+</style>
+</head>
+<body>
+<div class="top">
+<div>
+<button class="btn" onclick="toggleAdmin()">🔐 Admin</button>
+</div>
+<div id="adminBadge" class="hidden">
+<span style="background:#43e97b;padding:8px 15px;border-radius:20px;font-weight:bold;color:#1a1a2e;">👑 ADMIN FREE MODE</span>
+</div>
+</div>
+
+<div class="container">
+<div class="header">
+<h1>🏛️ ProGallery Museum</h1>
+<p style="font-size:1.3rem;color:#FFD700;">Digital Art Collection | Every artwork 1€</p>
+<p style="margin-top:15px;">Curator: Ljupcho Janeski | PayPal: @LjupchoJaneski</p>
+</div>
+
+<div id="adminBanner" class="admin-banner">
+👑 ADMIN MODE ACTIVE - YOU CAN UPLOAD ARTWORKS FOR FREE!
+</div>
+
+<div id="adminPanel" class="admin-panel">
+<div id="loginBox">
+<h2 style="color:#f5576c;text-align:center;margin-bottom:20px;">🔐 Admin Login</h2>
+<input type="password" id="pass" placeholder="Password">
+<button onclick="login()" class="btn btn-red" style="width:100%;font-size:18px;padding:15px;">Login</button>
+</div>
+<div id="dashBox" class="hidden">
+<h2 style="color:#f5576c;text-align:center;margin-bottom:20px;">👑 Museum Dashboard</h2>
+<div class="stats">
+<div class="stat"><span class="num" id="sEarn">0€</span><span>Revenue</span></div>
+<div class="stat"><span class="num" id="sPend">0</span><span>Pending</span></div>
+<div class="stat"><span class="num" id="sTotal">0</span><span>Total</span></div>
+<div class="stat"><span class="num" id="sSold">0</span><span>Sold</span></div>
+</div>
+<input type="file" id="fileAdmin" multiple accept="image/*">
+<button onclick="document.getElementById('fileAdmin').click()" class="btn btn-green" style="width:100%;font-size:20px;padding:20px;">📤 ADMIN UPLOAD FREE</button>
+<button onclick="logout()" class="btn btn-red" style="width:100%;margin-top:10px;">🚪 Logout</button>
+</div>
+</div>
+
+<div class="upload">
+<h2 style="color:#1a1a2e;margin-bottom:15px;">🎨 Submit Your Artwork</h2>
+<input type="file" id="fileUser" multiple accept="image/*">
+<button onclick="userUpload()" class="btn" style="font-size:20px;padding:18px 45px;">📤 Upload - Pay 1€</button>
+<p id="msg" style="margin-top:15px;color:#666;font-weight:bold;">💰 1€ per submission | JPG, PNG, GIF</p>
+</div>
+
+<div id="gallery" class="gallery"></div>
+</div>
+
+<script>
+const PASS='admin123';
+const PAYPAL='LjupchoJaneski';
+let isAdmin=false;
+let arts=JSON.parse(localStorage.getItem('museum_final'))||[
+{id:1,url:'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800',sales:23,approved:true,isAdmin:false},
+{id:2,url:'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800',sales:15,approved:true,isAdmin:false},
+{id:3,url:'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800',sales:45,approved:true,isAdmin:false}
+];
+
+function save(){localStorage.setItem('museum_final',JSON.stringify(arts))}
+function toggleAdmin(){document.getElementById('adminPanel').style.display=document.getElementById('adminPanel').style.display==='block'?'none':'block'}
+function login(){
+if(document.getElementById('pass').value===PASS){
+isAdmin=true;
+document.getElementById('loginBox').classList.add('hidden');
+document.getElementById('dashBox').classList.remove('hidden');
+document.getElementById('adminBadge').classList.remove('hidden');
+document.getElementById('adminBanner').classList.add('show');
+updateStats();
+render();
+alert('✅ ADMIN MODE: Free uploads enabled!')
+}else alert('Wrong password!')
+}
+function logout(){
+isAdmin=false;
+document.getElementById('adminPanel').style.display='none';
+document.getElementById('loginBox').classList.remove('hidden');
+document.getElementById('dashBox').classList.add('hidden');
+document.getElementById('adminBadge').classList.add('hidden');
+document.getElementById('adminBanner').classList.remove('show');
+document.getElementById('pass').value='';
+render()
+}
+function updateStats(){
+const total=arts.filter(a=>a.approved).length;
+const pending=arts.filter(a=>!a.approved).length;
+const sales=arts.reduce((s,a)=>s+(a.sales||0),0);
+document.getElementById('sEarn').textContent=sales+'€';
+document.getElementById('sPend').textContent=pending;
+document.getElementById('sTotal').textContent=arts.length;
+document.getElementById('sSold').textContent=sales;
+}
+function userUpload(){
+if(!confirm('Pay 1€ to submit?'))return;
+window.open(`https://www.paypal.com/paypalme/${PAYPAL}/1EUR`,'_blank');
+document.getElementById('msg').textContent='⏳ PayPal opened... After payment select image';
+setTimeout(()=>{if(confirm('Payment done? Select artwork now.'))document.getElementById('fileUser').click()},2000);
+}
+document.getElementById('fileUser').addEventListener('change',e=>handleFile(e,false));
+document.getElementById('fileAdmin').addEventListener('change',e=>handleFile(e,true));
+function handleFile(e,isAdminUpload){
+Array.from(e.target.files).forEach(file=>{
+if(file.size>10*1024*1024){alert('Max 10MB');return}
+const reader=new FileReader();
+reader.onload=ev=>{
+arts.unshift({id:Date.now()+Math.random(),url:ev.target.result,sales:0,approved:isAdminUpload?true:false,isAdmin:isAdminUpload});
+save();render();updateStats();
+alert(isAdminUpload?'✅ ADMIN: Uploaded FREE!':'✅ Submitted! Pending approval')
+};
+reader.readAsDataURL(file)
+});
+e.target.value=''
+}
+function approve(id){
+if(!isAdmin)return;
+arts.find(a=>a.id===id).approved=true;
+save();render();updateStats();alert('✅ Approved!')
+}
+function reject(id){
+if(!isAdmin)return;
+if(confirm('Reject?')){
+arts=arts.filter(a=>a.id!==id);
+save();render();updateStats();alert('❌ Rejected!')
+}}
+function delArt(id){
+if(!isAdmin)return;
+if(confirm('Delete permanently?')){
+arts=arts.filter(a=>a.id!==id);
+save();render();updateStats();alert('🗑️ Deleted!')
+}}
+function buy(id){
+window.open(`https://www.paypal.com/paypalme/${PAYPAL}/1EUR`,'_blank');
+setTimeout(()=>{if(confirm('Payment done?')){
+arts.find(a=>a.id===id).sales++;
+save();render();updateStats();alert('✅ Thank you!')
+}},2000)
+}
+function render(){
+const g=document.getElementById('gallery');
+g.innerHTML='';
+const visible=isAdmin?arts:arts.filter(a=>a.approved);
+if(visible.length===0){g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:#FFD700;font-size:1.5rem;">🎨 No artworks yet. Upload first!</div>';return}
+visible.forEach((art,i)=>{
+const card=document.createElement('div');
+card.className='card';
+card.innerHTML=`
+<img src="${art.url}" onclick="window.open('${art.url}','_blank')">
+<div class="badge badge-price">1€</div>
+${!art.approved?'<div class="badge badge-pending">⏳ Pending</div>':''}
+${art.sales>0?`<div class="badge badge-sold">💰 Sold ${art.sales}x</div>`:''}
+${art.isAdmin?'<div class="badge badge-admin">👑 ADMIN</div>':''}
+<div class="card-body">
+<h3>Artwork #${i+1} ${art.isAdmin?'👑':''}</h3>
+${!art.approved&&isAdmin?`
+<button class="btn btn-green" onclick="approve(${art.id})">✅ Approve</button>
+<button class="btn btn-red" onclick="reject(${art.id})">❌ Reject</button>
+`:`
+<button class="btn" onclick="buy(${art.id})">💰 BUY 1€</button>
+${isAdmin?`<button class="btn btn-red" onclick="delArt(${art.id})">🗑️ Delete</button>`:''}
+`}
+</div>`;
+g.appendChild(card)
+})
+}
+render();updateStats();
+</script>
+</body>
+</html>
