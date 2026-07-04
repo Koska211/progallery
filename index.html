@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ProGallery - AI Photo Contest | Win 100€ Monthly Prize</title>
+<meta name="description" content="Join ProGallery AI photo contest. Upload your best AI image for 1€, get votes, and win 100€ monthly prize. Sci-Fi, Cyberpunk, Fantasy themes.">
+<meta name="keywords" content="ai photo contest, ai art competition, win money, midjourney, dalle, sci-fi, cyberpunk">
+<meta property="og:title" content="ProGallery - Win 100€ AI Photo Contest">
+<meta property="og:description" content="Upload your best AI photo for 1€ and win 100€ monthly prize">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://koska211.github.io/progallery/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+<style>
+:root{--p:#667eea;--s:#764ba2;--g:#ffd700;--a:#ff6b6b}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,var(--p) 0%,var(--s) 100%);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;min-height:100vh;line-height:1.6}
+nav{position:fixed;top:0;width:100%;background:rgba(0,0,0,.3);backdrop-filter:blur(20px);z-index:1000;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:12px;font-size:1.8rem;font-weight:900}
+.logo-icon{font-size:2.2rem;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.nav-links{display:flex;gap:30px;align-items:center}
+.nav-links a{color:#fff;text-decoration:none;font-weight:500;transition:.3s;position:relative}
+.nav-links a:hover{color:var(--g)}
+.nav-links a::after{content:'';position:absolute;bottom:-5px;left:0;width:0;height:2px;background:var(--g);transition:.3s}
+.nav-links a:hover::after{width:100%}
+.lang-switcher{display:flex;gap:8px}
+.lang-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:.9rem;transition:.3s}
+.lang-btn.active{background:rgba(255,255,255,.4);transform:scale(1.1)}
+.header{text-align:center;padding:160px 20px 80px}
+h1{font-size:5rem;font-weight:900;margin-bottom:20px;text-shadow:0 5px 30px rgba(0,0,0,.3);background:linear-gradient(45deg,#fff,var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{color:rgba(255,255,255,.9);font-size:1.5rem;margin-bottom:15px}
+.prize-text{color:var(--g);font-size:1.4rem;margin-bottom:30px;font-weight:700;text-shadow:0 2px 10px rgba(0,0,0,.3)}
+.live-badge{display:inline-block;background:var(--a);padding:8px 20px;border-radius:25px;font-weight:700;margin-bottom:30px;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.6}}
+.stats{display:flex;justify-content:center;gap:40px;margin-bottom:50px;flex-wrap:wrap}
+.stat-box{background:rgba(255,255,255,.15);padding:20px 35px;border-radius:20px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);transition:.3s}
+.stat-box:hover{transform:translateY(-5px);background:rgba(255,255,255,.25)}
+.stat-num{font-size:2.5rem;font-weight:900;color:var(--g)}
+.stat-label{font-size:.95rem;opacity:.9;margin-top:5px}
+.upload-btn{background:#fff;color:var(--p);border:none;padding:25px 70px;font-size:1.5rem;font-weight:800;border-radius:50px;cursor:pointer;box-shadow:0 10px 40px rgba(0,0,0,.3);text-transform:uppercase;transition:.3s;position:relative;overflow:hidden}
+.upload-btn::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:rgba(102,126,234,.3);transform:translate(-50%,-50%);transition:.5s}
+.upload-btn:hover::before{width:300px;height:300px}
+.upload-btn:hover{transform:translateY(-5px);box-shadow:0 15px 50px rgba(0,0,0,.4)}
+.container{max-width:1400px;margin:0 auto;padding:0 20px}
+.info-box{background:rgba(255,255,255,.15);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.2);border-radius:25px;padding:40px;margin:0 auto 60px;max-width:1000px;text-align:center}
+.info-box h3{color:var(--g);margin-bottom:25px;font-size:2rem}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;text-align:left;margin-top:30px}
+.rule{background:rgba(0,0,0,.2);padding:25px;border-radius:20px;border:1px solid rgba(255,255,255,.1);transition:.3s}
+.rule:hover{transform:translateY(-5px);border-color:var(--g)}
+.rule-num{color:var(--g);font-size:2.5rem;font-weight:900;margin-bottom:12px}
+.rule p{font-size:1.05rem;line-height:1.7}
+.categories{display:flex;justify-content:center;gap:15px;margin:40px 0;flex-wrap:wrap}
+.cat-badge{background:rgba(255,255,255,.2);padding:10px 25px;border-radius:25px;font-weight:600;border:1px solid rgba(255,255,255,.3)}
+#gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:35px;padding:20px 0 100px}
+.img-card{border-radius:25px;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.3);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);position:relative;transition:.4s}
+.img-card:hover{transform:translateY(-12px) scale(1.02);box-shadow:0 25px 60px rgba(0,0,0,.5)}
+.img-card img{width:100%;height:400px;object-fit:cover;display:block}
+.rank-badge{position:absolute;top:15px;left:15px;background:linear-gradient(135deg,var(--g),#ffed4e);color:var(--p);padding:8px 16px;border-radius:20px;font-weight:900;font-size:1.1rem;box-shadow:0 5px 15px rgba(0,0,0,.3)}
+.price{position:absolute;top:15px;right:15px;background:var(--g);color:var(--p);padding:10px 20px;border-radius:25px;font-weight:900;box-shadow:0 5px 15px rgba(0,0,0,.3)}
+.img-info{padding:20px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px)}
+.img-title{font-weight:700;font-size:1.2rem;margin-bottom:12px}
+.img-category{color:var(--g);font-size:.9rem;margin-bottom:15px;opacity:.9}
+.vote-section{display:flex;justify-content:space-between;align-items:center}
+.vote-btn{background:var(--g);color:var(--p);border:none;padding:10px 25px;border-radius:25px;font-weight:700;cursor:pointer;transition:.3s;font-size:1rem}
+.vote-btn:hover{transform:scale(1.15);box-shadow:0 5px 20px rgba(255,215,0,.5)}
+.vote-btn:disabled{opacity:.5;cursor:not-allowed;transform:scale(1)}
+.vote-count{font-weight:700;font-size:1.2rem;display:flex;align-items:center;gap:8px}
+#fileInput{display:none}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:2000;justify-content:center;align-items:center;padding:20px}
+.modal.active{display:flex;animation:fadeIn.3s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-content{background:#fff;color:#333;padding:50px;border-radius:30px;text-align:center;max-width:550px;width:100%;max-height:90vh;overflow-y:auto;animation:slideUp.3s}
+@keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal h2{color:var(--p);margin-bottom:20px;font-size:2.2rem}
+.pay-link{background:#0070ba;color:white;padding:18px 45px;border-radius:50px;text-decoration:none;display:inline-block;font-weight:700;margin:20px 0;font-size:1.1rem;transition:.3s}
+.pay-link:hover{transform:scale(1.05);box-shadow:0 10px 30px rgba(0,112,186,.4)}
+.confirm-btn{background:linear-gradient(135deg,var(--p),var(--s));color:white;border:none;padding:18px 45px;border-radius:50px;cursor:pointer;font-weight:700;margin-top:15px;font-size:1.1rem;transition:.3s}
+.confirm-btn:hover{transform:scale(1.05)}
+.close-btn{background:transparent;color:#999;border:2px solid #ddd;padding:12px 35px;border-radius:50px;cursor:pointer;margin-top:20px;transition:.3s}
+.close-btn:hover{background:#f5f5f5}
+footer{background:rgba(0,0,0,.4);padding:50px 20px;margin-top:100px;text-align:center;border-top:2px solid rgba(255,255,255,.1)}
+footer a{color:var(--g);text-decoration:none;margin:0 20px;font-weight:600;transition:.3s}
+footer a:hover{text-decoration:underline;color:#fff}
+.social-links{display:flex;justify-content:center;gap:25px;margin:30px 0}
+.social-links a{font-size:1.8rem;transition:.3s}
+.social-links a:hover{transform:scale(1.3)}
+.cookie-banner{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,.95);padding:25px;z-index:3000;display:none;border-top:2px solid var(--g)}
+.cookie-banner.show{display:block;animation:slideUpBanner.5s}
+@keyframes slideUpBanner{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.cookie-banner button{background:var(--g);color:var(--p);border:none;padding:12px 35px;border-radius:25px;font-weight:700;cursor:pointer;margin-left:15px;font-size:1rem}
+@media(max-width:768px){h1{font-size:3rem}.nav-links{display:none}.stats{gap:20px}.upload-btn{padding:20px 45px;font-size:1.2rem}#gallery{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+<div class="nav-container">
+<div class="logo"><span class="logo-icon">🎨</span> ProGallery</div>
+<div class="nav-links">
+<a href="#gallery" data-lang="navGallery">Gallery</a>
+<a href="#rules" data-lang="navRules">Rules</a>
+<a href="#leaderboard" data-lang="navBoard">Leaderboard</a>
+<a href="#contact" data-lang="navContact">Contact</a>
+<div class="lang-switcher">
+<button class="lang-btn active" onclick="setLang('en')">EN</button>
+<button class="lang-btn" onclick="setLang('mk')">МК</button>
+<button class="lang-btn" onclick="setLang('de')">DE</button>
+</div>
+</nav>
+<div class="header">
+<h1 data-lang="title">ProGallery</h1>
+<p class="subtitle" data-lang="subtitle">AI Art Contest · Upload · Vote · Win Prize</p>
+<div class="live-badge" data-lang="liveBadge">🔴 LIVE CONTEST</div>
+<p class="prize-text" data-lang="prizeText">🏆 Best AI image of the month wins 100€</p>
+<div class="stats">
+<div class="stat-box"><div class="stat-num" id="totalImages">0</div><div class="stat-label" data-lang="statImages">AI Photos</div></div>
+<div class="stat-box"><div class="stat-num" id="totalVotes">0</div><div class="stat-label" data-lang="statVotes">Total Votes</div></div>
+<div class="stat-box"><div class="stat-num">100€</div><div class="stat-label" data-lang="statPrize">Monthly Prize</div></div>
+<div class="stat-box"><div class="stat-num" id="daysLeft">28</div><div class="stat-label" data-lang="statDays">Days Left</div></div>
+</div>
+<button class="upload-btn" onclick="startPayment()" data-lang="uploadBtn">+ UPLOAD FOR 1€</button>
+</div>
+<div class="container">
+<div class="info-box" id="rules">
+<h3 data-lang="howTitle">How It Works?</h3>
+<div class="categories">
+<div class="cat-badge">🚀 Sci-Fi</div>
+<div class="cat-badge">🤖 AI & Robots</div>
+<div class="cat-badge">🌌 Space</div>
+<div class="cat-badge">🌃 Cyberpunk</div>
+<div class="cat-badge">🧚 Fantasy</div>
+<div class="cat-badge">🌐 Digital Art</div>
+</div>
+<div class="rules">
+<div class="rule"><div class="rule-num">1</div><p data-lang="rule1">Pay 1€ and upload your best AI-generated photo (Midjourney, DALL-E, Stable Diffusion)</p></div>
+<div class="rule"><div class="rule-num">2</div><p data-lang="rule2">Community votes for the most creative AI images. One vote per user per image</p></div>
+<div class="rule"><div class="rule-num">3</div><p data-lang="rule3">Winner with most votes gets 100€ via PayPal at month end. New contest every month!</p></div>
+</div>
+<div id="gallery"></div>
+</div>
+<footer id="contact">
+<p><strong>ProGallery © 2026 - AI Art Competition Platform</strong></p>
+<div class="social-links">
+<a href="#" title="Instagram">📷</a>
+<a href="#" title="Twitter">🐦</a>
+<a href="#" title="Discord">💬</a>
+</div>
+<p style="margin:20px 0">
+<a href="#" onclick="showModal('terms')" data-lang="footerTerms">Terms & Conditions</a>
+<a href="#" onclick="showModal('privacy')" data-lang="footerPrivacy">Privacy Policy</a>
+<a href="mailto:contact@progallery.com" data-lang="footerContact">Contact Us</a>
+</p>
+<p style="opacity:.7;font-size:.9rem" data-lang="footerText">Professional AI Photo Contest Platform</p>
+</footer>
+<input type="file" id="fileInput" accept="image/*">
+<div class="modal" id="payModal">
+<div class="modal-content">
+<h2 data-lang="modalTitle">Payment 1€</h2>
+<p style="color:#666;margin-bottom:25px" data-lang="modalText">To enter the contest, pay 1€:</p>
+<a href="https://www.paypal.com/paypalme/ТВОЈ_ЈУЗЕРНЕЈМ/1EUR" target="_blank" class="pay-link" data-lang="payBtn">Pay with PayPal</a>
+<p style="font-size:.9rem;color:#999;margin:25px 0" data-lang="afterPay">After payment:</p>
+<button class="confirm-btn" onclick="confirmPayment()" data-lang="confirmBtn">✓ Paid, Upload Image</button>
+<br><button class="close-btn" onclick="closeModal()" data-lang="cancelBtn">Cancel</button>
+</div>
+<div class="modal" id="infoModal">
+<div class="modal-content" id="infoContent"></div>
+</div>
+<div class="cookie-banner" id="cookieBanner">
+<span data-lang="cookieText">We use cookies to improve your experience and track votes.</span>
+<button onclick="acceptCookies()" data-lang="cookieBtn">Accept</button>
+</div>
+<script>
+const t={en:{navGallery:"Gallery",navRules:"Rules",navBoard:"Leaderboard",navContact:"Contact",title:"ProGallery",subtitle:"AI Art Contest · Upload · Vote · Win Prize",liveBadge:"🔴 LIVE CONTEST",prizeText:"🏆 Best AI image of the month wins 100€",statImages:"AI Photos",statVotes:"Total Votes",statPrize:"Monthly Prize",statDays:"Days Left",uploadBtn:"+ UPLOAD FOR 1€",howTitle:"How It Works?",rule1:"Pay 1€ and upload your best AI-generated photo (Midjourney, DALL-E, Stable Diffusion)",rule2:"Community votes for the most creative AI images. One vote per user per image",rule3:"Winner with most votes gets 100€ via PayPal at month end. New contest every month!",modalTitle:"Payment 1€",modalText:"To enter the contest, pay 1€:",payBtn:"Pay with PayPal",afterPay:"After payment:",confirmBtn:"✓ Paid, Upload Image",cancelBtn:"Cancel",footerTerms:"Terms & Conditions",footerPrivacy:"Privacy Policy",footerContact:"Contact Us",footerText:"Professional AI Photo Contest Platform",cookieText:"We use cookies to improve your experience and track votes.",cookieBtn:"Accept",voteBtn:"Vote",votedBtn:"Voted"},mk:{navGallery:"Галерија",navRules:"Правила",navBoard:"Ранг листа",navContact:"Контакт",title:"ProGallery",subtitle:"AI Арт Натпревар · Качи · Гласај · Освој",liveBadge:"🔴 ВО ЖИВО",prizeText:"🏆 Најдобра AI слика на месецот освојува 100€",statImages:"AI Слики",statVotes:"Вкупно Гласови",statPrize:"Месечна награда",statDays:"Дена до крај",uploadBtn:"+ КАЧИ ЗА 1€",howTitle:"Како функционира?",rule1:"Плати 1€ и качи ја твојата најдобра AI слика (Midjourney, DALL-E, Stable Diffusion)",rule2:"Заедницата гласа за најкреативните AI слики. Еден глас по корисник по слика",rule3:"Победникот со најмногу гласови добива 100€ преку PayPal на крај на месецот. Нов натпревар секој месец!",modalTitle:"Плаќање 1€",modalText:"За да учествуваш, плати 1€:",payBtn:"Плати со PayPal",afterPay:"После плаќање:",confirmBtn:"✓ Платив, Качи слика",cancelBtn:"Откажи",footerTerms:"Услови",footerPrivacy:"Приватност",footerContact:"Контакт",footerText:"Професионална AI Арт Платформа",cookieText:"Користиме колачиња за подобро искуство и следење гласови.",cookieBtn:"Прифати",voteBtn:"Гласај",votedBtn:"Гласано"},de:{navGallery:"Galerie",navRules:"Regeln",navBoard:"Rangliste",navContact:"Kontakt",title:"ProGallery",subtitle:"KI-Kunstwettbewerb · Hochladen · Abstimmen · Gewinnen",liveBadge:"🔴 LIVE WETTBEWERB",prizeText:"🏆 Bestes KI-Bild des Monats gewinnt 100€",statImages:"KI-Fotos",statVotes:"Gesamt Stimmen",statPrize:"Monatspreis",statDays:"Tage übrig",uploadBtn:"+ FÜR 1€ HOCHLADEN",howTitle:"Wie funktioniert es?",rule1:"Zahle 1€ und lade dein bestes KI-generiertes Foto hoch (Midjourney, DALL-E, Stable Diffusion)",rule2:"Community stimmt für die kreativsten KI-Bilder ab. Eine Stimme pro Benutzer pro Bild",rule3:"Gewinner mit den meisten Stimmen erhält 100€ via PayPal am Monatsende. Neuer Wettbewerb jeden Monat!",modalTitle:"Zahlung 1€",modalText:"Um teilzunehmen, zahle 1€:",payBtn:"Mit PayPal bezahlen",afterPay:"Nach der Zahlung:",confirmBtn:"✓ Bezahlt, Bild hochladen",cancelBtn:"Abbrechen",footerTerms:"AGB",footerPrivacy:"Datenschutz",footerContact:"Kontakt",footerText:"Professionelle KI-Kunst-Wettbewerbsplattform",cookieText:"Wir verwenden Cookies für ein besseres Erlebnis und zur Stimmverfolgung.",cookieBtn:"Akzeptieren",voteBtn:"Abstimmen",votedBtn:"Abgestimmt"}};
+let lang='en';
+const d=[
+{id:1,url:'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800',title:'Sci-Fi City 2077',cat:'Sci-Fi',votes:312},
+{id:2,url:'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800',title:'AI Robot Future',cat:'AI & Robots',votes:289},
+{id:3,url:'https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=800',title:'Space Exploration',cat:'Space',votes:267},
+{id:4,url:'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800',title:'Cyberpunk Street',cat:'Cyberpunk',votes:245},
+{id:5,url:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',title:'Fantasy Landscape',cat:'Fantasy',votes:198},
+{id:6,url:'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800',title:'Digital Universe',cat:'Digital Art',votes:223}
+];
+let u=JSON.parse(localStorage.getItem('userImages')||'[]');
+let voted=JSON.parse(localStorage.getItem('votedImages')||'[]');
+const g=document.getElementById('gallery'),f=document.getElementById('fileInput'),m=document.getElementById('payModal');
+function setLang(l){lang=l;document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');document.querySelectorAll('[data-lang]').forEach(e=>{e.innerHTML=t[l][e.getAttribute('data-lang')]});render()}
+function startPayment(){m.classList.add('active')}
+function closeModal(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('active'))}
+function confirmPayment(){closeModal();f.click()}
+function showModal(type){const c=document.getElementById('infoContent');if(type==='terms'){c.innerHTML=`<h2>Terms & Conditions</h2><div style="text-align:left;margin:25px 0;line-height:1.8"><p><strong>1. Entry:</strong> 1€ per AI-generated image</p><p><strong>2. Voting:</strong> One vote per user per image</p><p><strong>3. Winner:</strong> Most votes at month end wins 100€</p><p><strong>4. Payment:</strong> Prize paid via PayPal within 7 days</p><p><strong>5. Content:</strong> Only AI-generated images allowed</p><p><strong>6. Refunds:</strong> No refunds after upload</p></div><button class="close-btn" onclick="closeModal()">Close</button>`}else{c.innerHTML=`<h2>Privacy Policy</h2><div style="text-align:left;margin:25px 0;line-height:1.8"><p><strong>Data Collected:</strong> Email, uploaded images, votes, IP address</p><p><strong>Usage:</strong> Contest operation only</p><p><strong>Sharing:</strong> No data sold to third parties</p><p><strong>Cookies:</strong> Used for vote tracking & analytics</p><p><strong>Retention:</strong> Images kept for 90 days</p></div><button class="close-btn" onclick="closeModal()">Close</button>`}document.getElementById('infoModal').classList.add('active')}
+function vote(id){if(voted.includes(id))return;voted.push(id);localStorage.setItem('votedImages',JSON.stringify(voted));let img=[...u,...d].find(i=>i.id===id);if(img){img.votes=(img.votes||0)+1;localStorage.setItem('userImages',JSON.stringify(u));render()}}
+f.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{u.unshift({id:Date.now(),url:ev.target.result,title:'Your AI Art',cat:'User Upload',votes:0});localStorage.setItem('userImages',JSON.stringify(u));render()};r.readAsDataURL(file)};
+function render(){g.innerHTML='';const all=[...u,...d].sort((a,b)=>(b.votes||0)-(a.votes||0));let tv=0;all.forEach((i,idx)=>{tv+=(i.votes||0);const hasV=voted.includes(i.id);const c=document.createElement('div');c.className='img-card';c.innerHTML=`${idx<3?`<div class="rank-badge">#${idx+1}</div>`:''}<img src="${i.url}" alt="${i.title}"><div class="price">1€</div><div class="img-info"><div class="img-title">${i.title}</div><div class="img-category">${i.cat||'AI Art'}</div><div class="vote-section"><button class="vote-btn" onclick="vote(${i.id})" ${hasV?'disabled':''}>${hasV?t[lang].votedBtn:t[lang].voteBtn}</button><div class="vote-count">❤️ ${i.votes||0}</div></div></div>`;g.appendChild(c)});document.getElementById('totalImages').textContent=all.length;document.getElementById('totalVotes').textContent=tv;const today=new Date();const lastDay=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();document.getElementById('daysLeft').textContent=lastDay-today.getDate()}
+function acceptCookies(){localStorage.setItem('cookiesAccepted','true');document.getElementById('cookieBanner').classList.remove('show')}
+if(!localStorage.getItem('cookiesAccepted'))document.getElementById('cookieBanner').classList.add('show');
+setLang(lang);render();
+// Google Analytics - замени G-XXXXXXXXXX со твој ID
+// window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');
+</script>
+</body>
+</html>
