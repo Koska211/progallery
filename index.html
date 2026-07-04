@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtContest PRO - AI Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Space Grotesk', sans-serif; }
+        body { background: #030712; color: #fff; }
+     .hero-gradient {
+            background: linear-gradient(135deg, #1e1b4b 0%, #581c87 25%, #be185d 50%, #c2410c 75%, #1e1b4b 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+     .glass-morphism {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+     .art-card {
+            background: rgba(17, 24, 39, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+     .art-card:hover {
+            transform: translateY(-12px);
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 25px 50px rgba(168, 85, 247, 0.25);
+        }
+     .prize-card {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+            border: 2px solid rgba(251, 191, 36, 0.3);
+        }
+     .btn-glow {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            transition: all 0.3s ease;
+        }
+     .btn-glow:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.6);
+        }
+     .rank-gold { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); box-shadow: 0 0 30px rgba(251, 191, 36, 0.5); }
+     .rank-silver { background: linear-gradient(135deg, #e5e7eb 0%, #9ca3af 100%); }
+     .rank-bronze { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+     .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+     .modal-backdrop.show { display: flex; }
+     .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            animation: slideInRight 0.4s ease;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(500px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+     .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="toastContainer"></div>
+    
+    <!-- HERO SECTION -->
+    <div class="hero-gradient">
+        <div class="container mx-auto px-4 py-24 max-w-7xl">
+            <div class="text-center">
+                <div class="inline-flex items-center gap-3 px-5 py-2 glass-morphism rounded-full text-sm font-semibold mb-8 border border-purple-500/30">
+                    <span class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></span>
+                    LIVE • CLOUD SYNCED • 2000+ IMAGES
+                </div>
+                
+                <h1 class="text-7xl md:text-9xl font-black mb-6 tracking-tighter">
+                    ArtContest<span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-pink-300 to-cyan-300">PRO</span>
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+                    Најголемата AI Art галерија во Македонија. Качувај неограничено. Освој награди. Стани легенда.
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-4 mb-16">
+                    <button onclick="openModal('admin')" class="btn-glow px-10 py-5 rounded-2xl font-bold text-lg">
+                        <i class="fas fa-crown mr-2"></i>Admin Panel
+                    </button>
+                    <a href="https://paypal.me/LjupchoJaneski/1EUR" target="_blank" class="glass-morphism px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/10 transition">
+                        <i class="fas fa-heart mr-2 text-pink-400"></i>Support 1€
+                    </a>
+                    <button onclick="scrollToPrizes()" class="glass-morphism px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/10 transition">
+                        <i class="fas fa-trophy mr-2 text-yellow-400"></i>Награди
+                    </button>
+                </div>
+
+                <!-- STATS -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                    <div class="glass-morphism rounded-2xl p-8">
+                        <div class="text-6xl font-black mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent" id="statImages">6</div>
+                        <div class="text-gray-400">AI Артворкс</div>
+                    </div>
+                    <div class="glass-morphism rounded-2xl p-8">
+                        <div class="text-6xl font-black mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent" id="statVotes">0</div>
+                        <div class="text-gray-400">Вкупно Гласови</div>
+                    </div>
+                    <div class="glass-morphism rounded-2xl p-8">
+                        <div class="text-6xl font-black mb-2 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">∞</div>
+                        <div class="text-gray-400">Cloud Storage</div>
+                    </div>
+                    <div class="glass-morphism rounded-2xl p-8">
+                        <div class="text-6xl font-black mb-2 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">24/7</div>
+                        <div class="text-gray-400">Live Contest</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRIZES SECTION -->
+    <div id="prizes" class="container mx-auto px-4 py-20 max-w-7xl">
+        <div class="text-center mb-16">
+            <h2 class="text-5xl md:text-7xl font-black mb-4">
+                <i class="fas fa-trophy text-yellow-400"></i> Награди
+            </h2>
+            <p class="text-xl text-gray-400">Топ 3 артисти освојуваат месечно</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="prize-card rounded-3xl p-8 text-center order-2 md:order-1">
+                <div class="text-6xl mb-4">🥈</div>
+                <div class="text-3xl font-black mb-2">2-ро Место</div>
+                <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-300 to-gray-100 mb-4">50€</div>
+                <div class="text-gray-400">+ Premium Badge</div>
+            </div>
+            
+            <div class="prize-card rounded-3xl p-8 text-center order-1 md:order-2 transform md:scale-110 border-4 border-yellow-400/50">
+                <div class="text-8xl mb-4">👑</div>
+                <div class="text-4xl font-black mb-2">1-во Место</div>
+                <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300 mb-4">100€</div>
+                <div class="text-yellow-400 font-bold">+ Златна Круна + Feature</div>
+            </div>
+            
+            <div class="prize-card rounded-3xl p-8 text-center order-3">
+                <div class="text-6xl mb-4">🥉</div>
+                <div class="text-3xl font-black mb-2">3-то Место</div>
+                <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400 mb-4">25€</div>
+                <div class="text-gray-400">+ Bronze Badge</div>
+            </div>
+        </div>
+
+        <div class="glass-morphism rounded-3xl p-8 text-center">
+            <i class="fas fa-info-circle text-4xl text-blue-400 mb-4"></i>
+            <p class="text-lg text-gray-300">
+                Наградите се доделуваат секој 1-ви во месецот. Победниците се избираат според вкупно гласови. 
+                <br>Поддржи го проектот со <a href="https://paypal.me/LjupchoJaneski/1EUR" target="_blank" class="text-pink-400 hover:underline font-bold">1€ донација</a> за поголеми награди!
+            </p>
+        </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="container mx-auto px-4 mb-12 max-w-7xl">
+        <div class="glass-morphism rounded-2xl p-6 flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex gap-3">
+                <button onclick="setFilter('votes')" id="btnVotes" class="px-6 py-3 rounded-xl bg-purple-500/30 border-2 border-purple-500 font-bold">
+                    <i class="fas fa-fire mr-2"></i>Топ Гласови
+                </button>
+                <button onclick="setFilter('newest')" id="btnNewest" class="px-6 py-3 rounded-xl glass-morphism hover:bg-white/10 transition font-bold">
+                    <i class="fas fa-clock mr-2"></i>Најнови
+                </button>
+            </div>
+            <input type="text" id="searchInput" placeholder="Пребарај artwork..." 
+                class="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white w-full md:w-96 focus:outline-none focus:border-purple-500 transition">
+        </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div class="container mx-auto px-4 pb-24 max-w-7xl">
+        <div id="gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+    </div>
+
+    <!-- ADMIN MODAL -->
+    <div id="adminModal" class="modal-backdrop">
+        <div class="glass-morphism rounded-3xl p-10 max-w-3xl w-full mx-4 max-h- overflow-y-auto">
+            <div id="loginView">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-4xl font-black"><i class="fas fa-shield-alt text-purple-400 mr-3"></i>Admin Access</h2>
+                    <button onclick="closeModal('admin')" class="text-gray-400 hover:text-white text-3xl transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <input type="password" id="adminPass" placeholder="Enter password" 
+                    class="w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 mb-6 text-lg focus:outline-none focus:border-purple-500">
+                <button onclick="login()" class="w-full btn-glow py-5 rounded-xl font-bold text-xl">
+                    <i class="fas fa-unlock mr-2"></i>Unlock Dashboard
+                </button>
+                <p class="text-sm text-gray-500 mt-4 text-center">Password: admin123</p>
+            </div>
+
+            <div id="uploadView" class="hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-4xl font-black"><i class="fas fa-cloud-upload-alt text-purple-400 mr-3"></i>Upload Center</h2>
+                    <button onclick="logout()" class="glass-morphism px-5 py-3 rounded-xl hover:bg-white/10 transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+                
+                <div onclick="document.getElementById('fileInput').click()" 
+                    class="border-3 border-dashed border-white/10 rounded-3xl p-16 text-center mb-8 hover:border-purple-500/50 transition cursor-pointer">
+                    <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
+                    <i class="fas fa-cloud-upload-alt text-8xl mb-6 text-purple-400"></i>
+                    <p class="text-2xl font-bold mb-3">Drop AI artworks here</p>
+                    <p class="text-gray-400">Unlimited uploads • 32MB max • Auto cloud hosting</p>
+                </div>
+
+                <div id="previewGrid" class="grid grid-cols-4 md:grid-cols-8 gap-3 mb-8"></div>
+
+                <div id="uploadProgress" class="hidden mb-8">
+                    <div class="glass-morphism rounded-2xl p-6">
+                        <div class="flex items-center gap-4 mb-4">
+                            <i class="fas fa-spinner fa-spin text-3xl text-purple-400"></i>
+                            <div class="flex-1">
+                                <div class="font-bold text-lg" id="progressText">Uploading...</div>
+                            </div>
+                        </div>
+                        <div class="w-full bg-white/5 rounded-full h-3">
+                            <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="uploadImages()" id="uploadBtn" class="w-full btn-glow py-5 rounded-xl font-bold text-xl">
+                    <i class="fas fa-rocket mr-2"></i>Deploy to Cloud
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CFG = {
+            imgbb: '87f05c24bcc91eb7a27b630a8cc333bc',
+            jsonbin: '6a496fdeda38895dfe2eb3a2',
+            jsonbinKey: '$2a$10$XFxLWvcDN9GpcbLOaImaL.PQAJNkszEP5YvgEmtv.ev5e.5Wu5oqW',
+            admin: 'admin123'
+        };
+        const API_URL = `https://api.jsonbin.io/v3/b/${CFG.jsonbin}`;
+
+        let app = {
+            isAdmin: false,
+            images: [],
+            votes: JSON.parse(localStorage.getItem('artcontest_votes_v2') || '{}'),
+            filter: 'votes',
+            files: []
+        };
+
+        // INIT WITH DEMO AI IMAGES + 1€ IMAGE
+        const DEMO_IMAGES = [
+            { id: 1, name: 'Cyberpunk City', url: 'https://i.ibb.co/3YHqRqK/cyberpunk.jpg', votes: 47, timestamp: Date.now() - 86400000, isDemo: true },
+            { id: 2, name: 'Fantasy Dragon', url: 'https://i.ibb.co/0jQJq7v/dragon.jpg', votes: 38, timestamp: Date.now() - 172800000, isDemo: true },
+            { id: 3, name: 'Space Explorer', url: 'https://i.ibb.co/7QpKsJ5/space.jpg', votes: 31, timestamp: Date.now() - 259200000, isDemo: true },
+            { id: 4, name: 'Neon Samurai', url: 'https://i.ibb.co/L9t7QqK/samurai.jpg', votes: 29, timestamp: Date.now() - 345600000, isDemo: true },
+            { id: 5, name: 'Mystic Forest', url: 'https://i.ibb.co/M6JqRqK/forest.jpg', votes: 24, timestamp: Date.now() - 432000000, isDemo: true },
+            { id: 6, name: 'Robot Portrait', url: 'https://i.ibb.co/9TQJq7v/robot.jpg', votes: 19, timestamp: Date.now() - 518400000, isDemo: true },
+            { id: 999, name: 'Support 1€', url: 'https://i.ibb.co/2nQJq7v/support1euro.jpg', votes: 999, timestamp: Date.now(), isSupport: true }
+        ];
+
+        function toast(msg, type = 'success') {
+            const colors = { success: 'from-green-500 to-emerald-500', error: 'from-red-500 to-pink-500' };
+            const icons = { success: 'fa-check-circle', error: 'fa-times-circle' };
+            const el = document.createElement('div');
+            el.className = `toast glass-morphism px-6 py-4 rounded-2xl bg-gradient-to-r ${colors[type]}`;
+            el.innerHTML = `<i class="fas ${icons[type]} mr-3"></i><span class="font-bold">${msg}</span>`;
+            document.getElementById('toastContainer').appendChild(el);
+            setTimeout(() => el.remove(), 3500);
+        }
+
+        function openModal(type) {
+            if (type === 'admin') document.getElementById('adminModal').classList.add('show');
+        }
+
+        function closeModal(type) {
+            if (type === 'admin') document.getElementById('adminModal').classList.remove('show');
+        }
+
+        function login() {
+            if (document.getElementById('adminPass').value === CFG.admin) {
+                app.isAdmin = true;
+                document.getElementById('loginView').classList.add('hidden');
+                document.getElementById('uploadView').classList.remove('hidden');
+                toast('Welcome back, Admin!');
+                renderGallery();
+            } else {
+                toast('Invalid password!', 'error');
+            }
+        }
+
+        function logout() {
+            app.isAdmin = false;
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('uploadView').classList.add('hidden');
+            document.getElementById('adminPass').value = '';
+            closeModal('admin');
+            renderGallery();
+        }
+
+        document.getElementById('fileInput').onchange = (e) => {
+            app.files = Array.from(e.target.files);
+            const grid = document.getElementById('previewGrid');
+            grid.innerHTML = '';
+            app.files.forEach((file, i) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    grid.innerHTML += `
+                        <div class="relative group">
+                            <img src="${e.target.result}" class="w-full h-24 object-cover rounded-lg">
+                            <button onclick="removeFile(${i})" class="absolute -top-2 -right-2 bg-red-500 w-7 h-7 rounded-full opacity-0 group-hover:opacity-100 transition">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        window.removeFile = (i) => {
+            app.files.splice(i, 1);
+            document.getElementById('fileInput').onchange({target: {files: app.files}});
+        }
+
+        async function uploadImgBB(file) {
+            const fd = new FormData();
+            fd.append('image', file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${CFG.imgbb}`, { method: 'POST', body: fd });
+            const data = await res.json();
+            if (!data.success) throw new Error('Upload failed');
+            return data.data.url;
+        }
+
+        async function saveCloud() {
+            await fetch(API_URL, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': CFG.jsonbinKey },
+                body: JSON.stringify(app.images)
+            });
+        }
+
+        async function loadCloud() {
+            try {
+                const res = await fetch(`${API_URL}/latest`, { headers: { 'X-Master-Key': CFG.jsonbinKey } });
+                const data = await res.json();
+                return data.record || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        async function uploadImages() {
+            if (app.files.length === 0) return toast('Select images first!', 'error');
+
+            const btn = document.getElementById('uploadBtn');
+            const progress = document.getElementById('uploadProgress');
+            btn.disabled = true;
+            progress.classList.remove('hidden');
+
+            let count = 0;
+            for (const file of app.files) {
+                try {
+                    const pct = Math.round((count / app.files.length) * 100);
+                    document.getElementById('progressText').textContent = `Uploading ${count + 1}/${app.files.length}...`;
+                    document.getElementById('progressBar').style.width = pct + '%';
+
+                    const url = await uploadImgBB(file);
+                    app.images.push({
+                        id: Date.now() + Math.random(),
+                        name: file.name.replace(/\.[^/.]+$/, ""),
+                        url: url,
+                        votes: 0,
+                        timestamp: Date.now()
+                    });
+                    count++;
+                } catch (e) {
+                    toast(`Failed: ${file.name}`, 'error');
+                }
+            }
+
+            await saveCloud();
+            btn.disabled = false;
+            progress.classList.add('hidden');
+            app.files = [];
+            document.getElementById('previewGrid').innerHTML = '';
+            document.getElementById('fileInput').value = '';
+            toast(`Deployed ${count} artworks to cloud!`);
+            closeModal('admin');
+            renderGallery();
+            updateStats();
+        }
+
+        async function vote(id) {
+            if (app.votes[id]) return toast('Already voted!', 'error');
+            const img = app.images.find(i => i.id === id);
+            if (img &&!img.isSupport) {
+                img.votes++;
+                app.votes[id] = true;
+                localStorage.setItem('artcontest_votes_v2', JSON.stringify(app.votes));
+                await saveCloud();
+                toast('Vote registered! ❤️');
+                renderGallery();
+                updateStats();
+            }
+        }
+
+        async function deleteImg(id) {
+            if (!app.isAdmin) return;
+            if (confirm('Delete this artwork permanently?')) {
+                app.images = app.images.filter(i => i.id!== id);
+                await saveCloud();
+                toast('Artwork deleted');
+                renderGallery();
+                updateStats();
+            }
+        }
+
+        function setFilter(type) {
+            app.filter = type;
+            document.getElementById('btnVotes').className = type === 'votes'
+             ? 'px-6 py-3 rounded-xl bg-purple-500/30 border-2 border-purple-500 font-bold'
+                : 'px-6 py-3 rounded-xl glass-morphism hover:bg-white/10 transition font-bold';
+            document.getElementById('btnNewest').className = type === 'newest'
+             ? 'px-6 py-3 rounded-xl bg-purple-500/30 border-2 border-purple-500 font-bold'
+                : 'px-6 py-3 rounded-xl glass-morphism hover:bg-white/10 transition font-bold';
+            renderGallery();
+        }
+
+        function scrollToPrizes() {
+            document.getElementById('prizes').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('searchInput').oninput = () => renderGallery();
+
+        function renderGallery() {
+            const gallery = document.getElementById('gallery');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filtered = app.images.filter(img => img.name.toLowerCase().includes(search));
+            const sorted = [...filtered].sort((a, b) => 
+                app.filter === 'votes'? b.votes - a.votes : b.timestamp - a.timestamp
+            );
+
+            gallery.innerHTML = sorted.map((img, idx) => {
+                if (img.isSupport) {
+                    return `
+                        <div class="art-card rounded-3xl overflow-hidden border-2 border-yellow-500/50">
+                            <div class="relative">
+                                <img src="${img.url}" alt="${img.name}" class="w-full h-80 object-cover">
+                                <div class="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 to-orange-400 px-4 py-2 rounded-xl font-black text-black">
+                                    <i class="fas fa-heart mr-1"></i>SUPPORT
+                                </div>
+                            </div>
+                            <div class="p-6 text-center">
+                                <a href="https://paypal.me/LjupchoJaneski/1EUR" target="_blank" class="w-full btn-glow py-4 rounded-xl font-bold text-lg block">
+                                    <i class="fas fa-donate mr-2"></i>Donate 1€
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const rankClass = idx === 0? 'rank-gold' : idx === 1? 'rank-silver' : idx === 2? 'rank-bronze' : '';
+                const rankBadge = idx < 3 && app.filter === 'votes'
+                 ? `<div class="absolute top-4 left-4 ${rankClass} px-5 py-2 rounded-xl font-black text-xl z-10">#${idx + 1}</div>`
+                    : '';
+                
+                return `
+                    <div class="art-card rounded-3xl overflow-hidden">
+                        ${rankBadge}
+                        <div class="relative group">
+                            <img src="${img.url}" alt="${img.name}" class="w-full h-80 object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-6">
+                                <div class="w-full">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <div class="text-4xl font-black">${img.votes} <i class="fas fa-heart text-pink-500"></i></div>
+                                        ${app.isAdmin &&!img.isDemo? `<button onclick="deleteImg(${img.id})" class="glass-morphism px-4 py-3 rounded-xl hover:bg-red-500/20 transition"><i class="fas fa-trash"></i></button>` : ''}
+                                    </div>
+                                    <button onclick="vote(${img.id})" 
+                                        class="w-full btn-glow py-4 rounded-xl font-bold text-lg ${app.votes[img.id]? 'opacity-50 cursor-not-allowed' : ''}"
+                                        ${app.votes[img.id]? 'disabled' : ''}>
+                                        <i class="fas ${app.votes[img.id]? 'fa-check' : 'fa-heart'} mr-2"></i>
+                                        ${app.votes[img.id]? 'Voted' : 'Vote Now'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-lg truncate">${img.name}</h3>
+                            <p class="text-sm text-gray-500 mt-1">${new Date(img.timestamp).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            const totalV = app.images.filter(i =>!i.isSupport).reduce((sum, img) => sum + img.votes, 0);
+            document.getElementById('statImages').textContent = app.images.filter(i =>!i.isSupport).length;
+            document.getElementById('statVotes').textContent = totalV;
+        }
+
+        // INIT
+        loadCloud().then(data => {
+            app.images = data.length > 0? data : DEMO_IMAGES;
+            if (data.length === 0) saveCloud(); // Save demo images
+            renderGallery();
+            updateStats();
+        });
+
+        setInterval(async () => {
+            app.images = await loadCloud();
+            renderGallery();
+            updateStats();
+        }, 15000);
+
+        document.getElementById('adminModal').onclick = (e) => {
+            if (e.target.id === 'adminModal') closeModal('admin');
+        };
+    </script>
+</body>
+</html>
