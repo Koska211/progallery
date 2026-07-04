@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ArtMuseum Pro | Digital Art 1€</title>
+<style>
+:root{--g:#FFD700;--d:#0a0e27;--b:#1a1f3a;--r:#ff4757;--gr:#2ed573;--p:#5352ed}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--d);color:#fff;min-height:100vh}
+.nav{position:fixed;top:0;width:100%;background:rgba(10,14,39,0.95);backdrop-filter:blur(20px);padding:15px 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid rgba(255,215,0,0.2)}
+.logo{font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--g),#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.btn{padding:10px 20px;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px;transition:.3s}
+.btn-gold{background:var(--g);color:var(--d)}
+.btn-red{background:var(--r);color:#fff}
+.btn-green{background:var(--gr);color:#fff}
+.btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(255,215,0,0.4)}
+.hero{margin-top:70px;padding:80px 5%;text-align:center;background:linear-gradient(135deg,rgba(255,215,0,0.1),transparent)}
+.hero h1{font-size:4rem;margin-bottom:15px;background:linear-gradient(135deg,#fff,var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.3rem;color:#aaa;margin-bottom:30px}
+.stats{display:flex;justify-content:center;gap:40px;margin:40px 0;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-num{font-size:2.5rem;font-weight:900;color:var(--g);display:block}
+.stat-label{color:#888;font-size:.9rem}
+.admin-banner{display:none;background:linear-gradient(135deg,var(--gr),#00ff88);color:var(--d);padding:15px;text-align:center;font-weight:900;margin:20px 5%;border-radius:12px}
+.admin-banner.show{display:block}
+.container{max-width:1400px;margin:0 auto;padding:0 5%}
+.panel{background:var(--b);border:1px solid rgba(255,215,0,0.2);border-radius:16px;padding:30px;margin:30px 0}
+.panel h2{font-size:1.8rem;margin-bottom:20px;color:var(--g)}
+.upload-zone{border:3px dashed var(--g);border-radius:12px;padding:60px 20px;text-align:center;cursor:pointer;transition:.3s;background:rgba(255,215,0,0.05)}
+.upload-zone:hover{background:rgba(255,215,0,0.1);border-color:#FFA500}
+.upload-zone.admin{border-color:var(--gr);background:rgba(46,213,115,0.1)}
+.upload-zone.admin:hover{background:rgba(46,213,115,0.2)}
+input[type=file]{display:none}
+input[type=password]{width:100%;padding:15px;background:var(--d);border:2px solid rgba(255,215,0,0.3);border-radius:8px;color:#fff;font-size:16px;margin:10px 0}
+input[type=password]:focus{outline:none;border-color:var(--g)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:25px;margin:30px 0}
+.card{background:var(--b);border-radius:16px;overflow:hidden;border:1px solid rgba(255,215,0,0.2);transition:.3s;position:relative}
+.card:hover{transform:translateY(-8px);border-color:var(--g);box-shadow:0 20px 40px rgba(0,0,0,0.4)}
+.card-img{width:100%;height:350px;object-fit:cover;cursor:pointer}
+.badge{position:absolute;top:12px;left:12px;padding:8px 14px;border-radius:20px;font-weight:700;font-size:12px;z-index:10}
+.badge-price{background:var(--g);color:var(--d)}
+.badge-pending{background:#ff9f43;color:#fff;top:50px}
+.badge-sold{background:var(--gr);color:#fff;bottom:12px;left:12px}
+.badge-admin{background:var(--gr);color:var(--d);top:50px}
+.card-body{padding:20px}
+.card-title{font-size:1.1rem;font-weight:700;margin-bottom:12px}
+.card-actions{display:flex;gap:10px;flex-wrap:wrap}
+.card-actions .btn{flex:1;min-width:100px}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:2000;align-items:center;justify-content:center}
+.modal.show{display:flex}
+.modal-content{background:var(--b);padding:40px;border-radius:20px;max-width:500px;width:90%;border:2px solid var(--g)}
+.toast{position:fixed;bottom:30px;right:30px;background:var(--b);color:#fff;padding:18px 25px;border-radius:12px;border-left:4px solid var(--g);font-weight:600;opacity:0;transform:translateX(400px);transition:.4s;z-index:3000;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.toast.show{opacity:1;transform:translateX(0)}
+.hidden{display:none}
+.tabs{display:flex;gap:10px;margin-bottom:25px;border-bottom:1px solid rgba(255,215,0,0.2)}
+.tab{padding:12px 25px;background:transparent;border:none;color:#888;cursor:pointer;font-weight:700;border-bottom:3px solid transparent;transition:.3s}
+.tab.active{color:var(--g);border-bottom-color:var(--g)}
+@media(max-width:768px){.hero h1{font-size:2.5rem}.grid{grid-template-columns:1fr}.stats{gap:20px}}
+</style>
+</head>
+<body>
+<nav class="nav">
+<div class="logo">🎨 ArtMuseum Pro</div>
+<div>
+<button class="btn btn-gold" onclick="toggleModal()">🔐 Admin</button>
+<span id="adminBadge" class="hidden" style="background:var(--gr);padding:8px 15px;border-radius:20px;margin-left:10px;font-weight:700;color:var(--d)">👑 ADMIN</span>
+</div>
+</nav>
+
+<section class="hero">
+<h1>Digital Art Museum</h1>
+<p>Collect Unique AI & Human Artworks for Just 1€</p>
+<div class="stats">
+<div class="stat"><span class="stat-num" id="statArt">0</span><span class="stat-label">Artworks</span></div>
+<div class="stat"><span class="stat-num" id="statSales">0</span><span class="stat-label">Sold</span></div>
+<div class="stat"><span class="stat-num" id="statRev">0€</span><span class="stat-label">Revenue</span></div>
+<div class="stat"><span class="stat-num" id="statUsers">0</span><span class="stat-label">Artists</span></div>
+</div>
+</section>
+
+<div id="adminBanner" class="admin-banner">
+👑 ADMIN MODE: FREE UPLOADS ENABLED | AUTO-APPROVED
+</div>
+
+<div class="container">
+<div class="panel" id="uploadPanel">
+<div class="tabs">
+<button class="tab active" onclick="switchTab('user')">👤 User Upload - 1€</button>
+<button class="tab" onclick="switchTab('admin')" id="adminTab" style="display:none">👑 Admin Upload - FREE</button>
+<button class="tab" onclick="switchTab('stats')">📊 Dashboard</button>
+</div>
+
+<div id="tab-user">
+<div class="upload-zone" onclick="userUpload()">
+<div style="font-size:3rem;margin-bottom:15px">📤</div>
+<h3>Upload Your Artwork</h3>
+<p style="color:#888;margin-top:10px">Pay 1€ via PayPal to submit | JPG, PNG, GIF | Max 10MB</p>
+</div>
+<input type="file" id="fileUser" multiple accept="image/*">
+</div>
+
+<div id="tab-admin" class="hidden">
+<div class="upload-zone admin" onclick="adminUpload()">
+<div style="font-size:3rem;margin-bottom:15px">👑</div>
+<h3>Admin Upload - FREE & INSTANT</h3>
+<p style="color:#888;margin-top:10px">No payment required | Auto-approved | Unlimited</p>
+</div>
+<input type="file" id="fileAdmin" multiple accept="image/*">
+</div>
+
+<div id="tab-stats" class="hidden">
+<h2 style="margin-bottom:20px">📊 Museum Statistics</h2>
+<div id="statsDetail" style="line-height:2.5;color:#aaa"></div>
+</div>
+</div>
+
+<div class="grid" id="gallery"></div>
+</div>
+
+<div class="modal" id="loginModal">
+<div class="modal-content">
+<h2 style="margin-bottom:20px;color:var(--g)">🔐 Admin Login</h2>
+<input type="password" id="adminPass" placeholder="Enter password" onkeypress="if(event.key==='Enter')login()">
+<button class="btn btn-gold" style="width:100%;margin-top:15px" onclick="login()">Login</button>
+<button class="btn" style="width:100%;margin-top:10px;background:#333" onclick="toggleModal()">Cancel</button>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PASS='admin123';
+const PAYPAL='LjupchoJaneski';
+let isAdmin=false;
+let arts=JSON.parse(localStorage.getItem('artmuseum_v1'))||[
+{id:1,url:'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800',sales:23,approved:true,isAdmin:false,date:Date.now()-86400000},
+{id:2,url:'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800',sales:15,approved:true,isAdmin:false,date:Date.now()-172800000},
+{id:3,url:'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800',sales:45,approved:true,isAdmin:false,date:Date.now()-259200000}
+];
+
+function toast(msg,type='success'){
+const t=document.getElementById('toast');
+t.textContent=msg;
+t.style.borderLeftColor=type==='error'?'#ff4757':type==='warn'?'#ff9f43':'#FFD700';
+t.classList.add('show');
+setTimeout(()=>t.classList.remove('show'),3000);
+}
+function save(){localStorage.setItem('artmuseum_v1',JSON.stringify(arts))}
+function toggleModal(){document.getElementById('loginModal').classList.toggle('show')}
+function login(){
+if(document.getElementById('adminPass').value===PASS){
+isAdmin=true;
+document.getElementById('adminBadge').classList.remove('hidden');
+document.getElementById('adminBanner').classList.add('show');
+document.getElementById('adminTab').style.display='block';
+toggleModal();
+updateStats();
+render();
+toast('✅ Admin mode activated! Free uploads enabled')
+}else toast('Wrong password','error')
+}
+function logout(){
+isAdmin=false;
+document.getElementById('adminBadge').classList.add('hidden');
+document.getElementById('adminBanner').classList.remove('show');
+document.getElementById('adminTab').style.display='none';
+document.getElementById('adminPass').value='';
+switchTab('user');
+render();
+toast('Logged out')
+}
+function switchTab(tab){
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+document.querySelectorAll('[id^=tab-]').forEach(t=>t.classList.add('hidden'));
+event.target.classList.add('active');
+document.getElementById('tab-'+tab).classList.remove('hidden');
+if(tab==='stats')updateStatsDetail()
+}
+function updateStats(){
+const total=arts.filter(a=>a.approved).length;
+const sales=arts.reduce((s,a)=>s+(a.sales||0),0);
+const artists=new Set(arts.map(a=>a.isAdmin?'admin':'user')).size;
+document.getElementById('statArt').textContent=total;
+document.getElementById('statSales').textContent=sales;
+document.getElementById('statRev').textContent=sales+'€';
+document.getElementById('statUsers').textContent=artists;
+}
+function updateStatsDetail(){
+const total=arts.length;
+const approved=arts.filter(a=>a.approved).length;
+const pending=arts.filter(a=>!a.approved).length;
+const sales=arts.reduce((s,a)=>s+(a.sales||0),0);
+const admin=arts.filter(a=>a.isAdmin).length;
+document.getElementById('statsDetail').innerHTML=`
+<div>📊 <strong>Total Artworks:</strong> ${total}</div>
+<div>✅ <strong>Approved:</strong> ${approved}</div>
+<div>⏳ <strong>Pending:</strong> ${pending}</div>
+<div>💰 <strong>Total Sales:</strong> ${sales}</div>
+<div>💵 <strong>Revenue:</strong> ${sales}€</div>
+<div>👑 <strong>Admin Uploads:</strong> ${admin}</div>
+<div>👤 <strong>User Uploads:</strong> ${total-admin}</div>
+`;
+}
+function userUpload(){
+if(!confirm('Pay 1€ via PayPal to submit your artwork?'))return;
+window.open(`https://www.paypal.com/paypalme/${PAYPAL}/1EUR`,'_blank');
+toast('PayPal opened. Complete payment then select image','warn');
+setTimeout(()=>{if(confirm('Payment completed? Select your artwork now.'))document.getElementById('fileUser').click()},2000)
+}
+function adminUpload(){
+if(!isAdmin){toast('Admin only!','error');return}
+document.getElementById('fileAdmin').click()
+}
+document.getElementById('fileUser').addEventListener('change',e=>handleUpload(e,false));
+document.getElementById('fileAdmin').addEventListener('change',e=>handleUpload(e,true));
+function handleUpload(e,isAdminUpload){
+Array.from(e.target.files).forEach(file=>{
+if(file.size>10*1024*1024){toast('File too large! Max 10MB','error');return}
+const reader=new FileReader();
+reader.onload=ev=>{
+arts.unshift({
+id:Date.now()+Math.random(),
+url:ev.target.result,
+sales:0,
+approved:isAdminUpload,
+isAdmin:isAdminUpload,
+date:Date.now()
+});
+save();render();updateStats();
+toast(isAdminUpload?'✅ Admin: Uploaded FREE & auto-approved!':'✅ Submitted! Awaiting admin approval')
+};
+reader.readAsDataURL(file)
+});
+e.target.value=''
+}
+function approve(id){
+if(!isAdmin)return;
+const art=arts.find(a=>a.id===id);
+art.approved=true;
+save();render();updateStats();
+toast('✅ Artwork approved!')
+}
+function reject(id){
+if(!isAdmin)return;
+if(confirm('Reject this artwork? User payment NOT refunded.')){
+arts=arts.filter(a=>a.id!==id);
+save();render();updateStats();
+toast('❌ Artwork rejected')
+}}
+function deleteArt(id){
+if(!isAdmin)return;
+if(confirm('Permanently delete this artwork?')){
+arts=arts.filter(a=>a.id!==id);
+save();render();updateStats();
+toast('🗑️ Artwork deleted')
+}}
+function buy(id){
+window.open(`https://www.paypal.com/paypalme/${PAYPAL}/1EUR`,'_blank');
+toast('PayPal opened. Complete payment to acquire','warn');
+setTimeout(()=>{
+if(confirm('Payment completed? Artwork will be marked as sold.')){
+arts.find(a=>a.id===id).sales++;
+save();render();updateStats();
+toast('✅ Thank you! Artwork acquired!')
+}},2000)
+}
+function render(){
+const g=document.getElementById('gallery');
+g.innerHTML='';
+const visible=isAdmin?arts:arts.filter(a=>a.approved);
+if(visible.length===0){
+g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:#666"><div style="font-size:4rem;margin-bottom:20px">🎨</div><h3>No artworks yet</h3><p>Be the first to upload!</p></div>';
+return
+}
+visible.forEach((art,i)=>{
+const card=document.createElement('div');
+card.className='card';
+card.innerHTML=`
+<img src="${art.url}" class="card-img" onclick="window.open('${art.url}','_blank')">
+<div class="badge badge-price">1€</div>
+${!art.approved?'<div class="badge badge-pending">⏳ Pending</div>':''}
+${art.sales>0?`<div class="badge badge-sold">💰 Sold ${art.sales}x</div>`:''}
+${art.isAdmin?'<div class="badge badge-admin">👑 ADMIN</div>':''}
+<div class="card-body">
+<div class="card-title">Artwork #${String(i+1).padStart(3,'0')} ${art.isAdmin?'👑':''}</div>
+<div class="card-actions">
+${!art.approved&&isAdmin?`
+<button class="btn btn-green" onclick="approve(${art.id})">✅ Approve</button>
+<button class="btn btn-red" onclick="reject(${art.id})">❌ Reject</button>
+`:`
+<button class="btn btn-gold" onclick="buy(${art.id})">💰 Buy 1€</button>
+${isAdmin?`<button class="btn btn-red" onclick="deleteArt(${art.id})">🗑️ Delete</button>`:''}
+`}
+</div>
+</div>`;
+g.appendChild(card)
+})
+}
+render();updateStats();
+</script>
+</body>
+</html>
