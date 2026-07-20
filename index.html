@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="google-site-verification" content="LgXMfTZJzuqIc4shW34BFp6sDZ7sGvd8rRFJDvKaUFI" />
+<title>Global AI Art Championship Frankfurt | AI Art Contest 2026 | Win Prizes</title>
+<meta name="description" content="Join the Global AI Art Championship in Frankfurt. 500+ AI artists competing for €175 in prizes. Submit your AI generated art to the top-rated AI art contest of 2026.">
+<meta name="keywords" content="Global AI Art Championship, Frankfurt AI Art Contest, AI Art Competition, Win AI Art Money, AI Art Gallery">
+<script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css)">
+<script src="[https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js](https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js)"></script>
+<script src="[https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js](https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js)"></script>
+<link href="[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap)" rel="stylesheet">
+<style>
+*{font-family:'Inter',sans-serif;box-sizing:border-box}
+.font-display{font-family:"Syne",sans-serif}
+body { background-color: #fcfcfc; background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0.03) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(225,39%,30%,0.03) 0px, transparent 50%), radial-gradient(at 50% 100%, hsla(339,49%,30%,0.02) 0px, transparent 50%); overflow-x:hidden; }
+.card { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(0,0,0,0.04); transition:all .4s cubic-bezier(0.16,1,0.3,1)}
+.card:hover{transform:translateY(-6px);box-shadow:0 20px 40px -12px rgba(0,0,0,0.12)}
+.vote-btn{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;transition:all .2s}
+.vote-btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px -5px rgba(124,58,237,0.5)}
+.promote-btn{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;transition:all .2s;font-weight:900;text-shadow:0 1px 2px rgba(0,0,0,0.2)}
+input[type="file"]{display:none}
+.marquee{animation:marquee 30s linear infinite}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.shine{position:relative;overflow:hidden}
+.shine::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:shine 3s infinite}
+@keyframes shine{0%{left:-100%}100%{left:200%}}
+.chat-bubble { animation: fadeIn 0.25s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+/* Toast Notifications */
+#toastContainer { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+.toast { background: #000; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 12px; font-weight: 700; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1); display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1); }
+@keyframes toastIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+</style>
+</head>
+<body class="min-h-screen flex flex-col text-zinc-900">
+<div id="toastContainer"></div>
+<div class="bg-black text-white py-2 overflow-hidden border-b border-white/10">
+<div id="marqueeContainer" class="flex gap-8 marquee whitespace-nowrap text-[11px] font-bold tracking-widest">
+<span>🔥 SPONSOR PACKAGES FROM €25 • GET YOUR LOGO IN FRONT OF 500+ AI ARTISTS • LOADED VIA ADMIN PANEL • </span>
+</div>
+</div>
+<div class="bg-[#0a0a0a] text-white text-[11px] py-2 px-4">
+<div class="max-w-[1320px] mx-auto flex justify-between items-center gap-2">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> <span data-i="seasonLive">SEASON 01 LIVE</span></span>
+<span class="hidden md:flex items-center gap-1.5"><i class="fas fa-eye"></i> <span id="viewCount">12,483</span> <span data-i="viewsMonth">views this month</span></span>
+</div>
+<div class="flex items-center gap-2">
+<a href="#" class="bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-full transition"><i class="fab fa-instagram"></i></a>
+<a href="#" class="bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-full transition"><i class="fab fa-discord"></i></a>
+<span class="bg-white text-black px-2.5 py-1 rounded-full font-black text-[10px]" data-i="artistsBadge">500+ ARTISTS</span>
+</div>
+</div>
+</div>
+<header class="sticky top-0 z-40 bg-[#fcfcfc]/80 backdrop-blur-xl border-b border-black/5">
+<div class="max-w-[1320px] mx-auto px-4 md:px-6 py-3 flex justify-between items-center gap-2">
+<div id="mobileMenuToggle" class="md:hidden cursor-pointer p-2 -ml-2 text-xl">
+<i class="fas fa-bars"></i>
+</div>
+<div class="flex items-center gap-2 min-w-0 flex-shrink-1">
+<div class="w-9 h-9 md:w-10 md:h-10 bg-black text-white rounded-xl flex items-center justify-center font-display font-extrabold text-base md:text-lg flex-shrink-0">G</div>
+<div class="min-w-0">
+<h1 class="font-display font-extrabold text-[14px] md:text-[18px] leading-[0.9] tracking-tight truncate">GLOBAL AI ART CHAMPIONSHIP</h1>
+<p class="text-[8px] md:text-[10px] tracking-[0.15em] font-bold opacity-50 truncate mt-0.5">2026 • FRANKFURT</p>
+</div>
+</div>
+<div class="flex items-center gap-1 md:gap-2 flex-shrink-0">
+<div class="mr-2 md:mr-4">
+<select id="langSelect" onchange="changeLanguage(this.value)" class="bg-transparent text-[10px] md:text-xs font-bold outline-none cursor-pointer">
+<option value="en">EN</option>
+<option value="de">DE</option>
+</select>
+</div>
+<button onclick="window.open('[https://paypal.me/LjupchoJaneski/5EUR','_blank](https://paypal.me/LjupchoJaneski/5EUR','_blank)')" class="bg-emerald-500 hover:bg-emerald-600 text-black px-2.5 md:px-3 py-2 rounded-full text-[10px] md:text-xs font-black flex items-center gap-1 shadow-sm transition">
+<i class="fas fa-heart text-[9px]"></i> <span data-i="donateBtn">DONATE</span>
+</button>
+<button onclick="showAdmin()" class="bg-amber-400 text-black px-2.5 md:px-4 py-2 rounded-full text-[10px] md:text-xs font-black flex items-center gap-1 shadow-sm"><i class="fas fa-crown"></i> <span data-i="adminBtn">ADMIN</span></button>
+<button onclick="openSubmitModal()" class="bg-black text-white px-3 md:px-6 py-2 rounded-full text-[10px] md:text-xs font-black flex items-center gap-1"><i class="fas fa-plus"></i> <span data-i="submitBtn">SUBMIT</span></button>
+</div>
+</div>
+<nav id="mobileNav" class="hidden md:hidden border-t border-black/10 px-6 py-4 bg-white">
+<a href="#" class="block py-3 font-bold border-b border-gray-100" onclick="closeMobileNav(); window.scrollTo({top: 0, behavior: 'smooth'}); return false;" data-i="navGallery">Gallery</a>
+<a href="#" class="block py-3 font-bold border-b border-gray-100" onclick="closeMobileNav(); openMuseumModal(); return false;" data-i="navMuseum">Museum</a>
+<a href="#" class="block py-3 font-bold" onclick="closeMobileNav(); openSubmitModal(); return false;" data-i="navSubmit">Submit Art</a>
+</nav>
+</header>
+<main class="flex-grow">
+<section class="relative overflow-hidden border-b border-black/5 pb-12">
+<div class="max-w-[1320px] mx-auto px-4 md:px-6 pt-6 md:pt-12 pb-4">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<div class="lg:col-span-8 w-full">
+<div class="inline-flex items-center gap-2 bg-black text-white rounded-full px-3 py-1.5 text-[10px] font-bold mb-4">
+<span class="bg-emerald-400 text-black px-2 py-0.5 rounded-full text-[9px]">● LIVE</span>
+<span id="liveCount">0</span> <span data-i="artworksText">artworks</span> • <span id="liveVotes">0</span> <span data-i="votesText">votes</span>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+<div class="max-w-[480px]">
+<h2 class="font-display font-extrabold leading-[0.9] tracking-[-0.03em]">
+<span class="block text-[38px] md:text-[62px]" data-i="heroLine1">AI art that</span>
+<span class="block mt-1"><span class="inline-block bg-black text-white px-3 py-1 rounded-xl md:rounded-2xl text-[34px] md:text-[58px] leading-none" data-i="heroLine2">wins real</span></span>
+<span class="block text-[38px] md:text-[62px] mt-1" data-i="heroLine3">money.</span>
+</h2>
+</div>
+<div class="flex flex-col gap-6">
+<div class="w-24 h-24 bg-emerald-500 rounded-3xl flex items-center justify-center text-white text-5xl shadow-lg rotate-3 ml-auto relative -top-6">
+<i class="fas fa-robot"></i>
+</div>
+<div onclick="openMuseumModal()" class="cursor-pointer w-full sm:w-[250px] bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-black p-5 rounded-[22px] shadow-xl hover:scale-105 transition-all duration-300 border border-black/10 text-center group relative">
+<div class="absolute -top-2.5 -right-2.5 bg-emerald-500 text-black font-black text-[8px] tracking-widest px-2.5 py-1 rounded-full shadow-sm" data-i="freeEntryBadge">FREE ENTRY</div>
+<div class="w-11 h-11 bg-black text-white rounded-full flex items-center justify-center text-xl mx-auto mb-2 shadow-md">🏛️</div>
+<h3 class="font-display font-black text-[15px] tracking-tight text-black" data-i="museumHeader">AI MUSEUM</h3>
+<p class="text-[9px] font-medium text-black/80 mt-1 leading-tight" data-i="museumSubHeader">Enter the permanent archive and browse masterpieces</p>
+<span class="inline-block bg-black text-white font-black text-[10px] px-4 py-1.5 rounded-full shadow-md mt-3" data-i="openBtn">OPEN →</span>
+</div>
+</div>
+</div>
+<p class="text-[14px] md:text-[16px] leading-relaxed text-zinc-600 mt-5 max-w-[520px]" data-i="heroDescription"><b class="text-black">€175 fixed prize escrowed</b> in PayPal Business. Every vote verified, every artwork checked. Join 500+ artists, get featured, win sponsors.</p>
+<div class="mt-6 flex flex-col sm:flex-row gap-3">
+<button onclick="openSubmitModal()" class="bg-black text-white px-6 py-3.5 rounded-full font-black text-xs tracking-wide flex items-center justify-center gap-2 shadow-xl hover:bg-zinc-800 transition">
+<i class="fas fa-sparkles text-amber-300"></i> <span data-i="submitArtButton">SUBMIT YOUR ART NOW</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-8 flex flex-wrap items-center gap-3">
+<div class="flex items-center gap-3 bg-white/80 border border-black/5 backdrop-blur-md rounded-full px-4 py-2.5 shadow-sm">
+<div class="flex -space-x-2"><img src="[https://i.pravatar.cc/28?img=1](https://i.pravatar.cc/28?img=1)" class="w-6 h-6 rounded-full border-2 border-white"><img src="[https://i.pravatar.cc/28?img=2](https://i.pravatar.cc/28?img=2)" class="w-6 h-6 rounded-full border-2 border-white"><img src="[https://i.pravatar.cc/28?img=3](https://i.pravatar.cc/28?img=3)" class="w-6 h-6 rounded-full border-2 border-white"></div>
+<span class="text-xs font-bold" data-i="artistsJoinedText">500+ artists joined</span>
+</div>
+</div>
+</div>
+<div class="max-w-[1320px] mx-auto px-4 md:px-6 pb-4 grid lg:grid-cols-12 gap-6">
+<div class="lg:col-span-7">
+<div class="grid grid-cols-3 gap-2.5 max-w-[520px]">
+<div class="card rounded-[16px] p-4 shadow-sm"><div class="text-[9px] font-bold tracking-widest opacity-50" data-i="prizePoolLabel">PRIZE POOL</div><div class="font-display font-extrabold text-[22px] mt-1">€175</div><div class="text-[10px] text-emerald-600 font-bold mt-2"><i class="fas fa-lock"></i> <span data-i="escrowedLabel">Escrowed</span></div></div>
+<div class="card rounded-[16px] p-4 shadow-sm"><div class="text-[9px] font-bold tracking-widest opacity-50" data-i="votingLabel">VOTING</div><div class="font-display font-extrabold text-[20px] leading-[0.9] mt-1">1 / 24h</div><div class="text-[10px] text-violet-600 font-bold mt-2" data-i="antibotLabel">Anti-bot</div></div>
+<div class="card rounded-[16px] p-4 shadow-sm"><div class="text-[9px] font-bold tracking-widest opacity-50" data-i="entryLabel">ENTRY</div><div class="font-display font-extrabold text-[22px] mt-1" data-i="freeLabel">FREE</div><div class="text-[10px] opacity-60 mt-2" data-i="first30Label">First 30</div></div>
+</div>
+</div>
+<div class="lg:col-span-5 space-y-4">
+<div class="bg-black text-white rounded-[20px] p-5 relative overflow-hidden shadow-md">
+<div class="relative">
+<div class="flex justify-between items-center mb-4"><h3 class="font-display font-bold text-[12px]" data-i="prizeStructHeader">PRIZE STRUCTURE</h3><span class="bg-emerald-500 text-black px-2.5 py-1 rounded-full text-[9px] font-black" data-i="escrowVerifiedBadge">● ESCROW VERIFIED</span></div>
+<div class="space-y-2">
+<div class="bg-white/10 rounded-xl p-3 flex justify-between items-center text-xs"><span data-i="firstPlaceText">🥇 1st Place Winner</span><b class="font-display text-base">€100</b></div>
+<div class="bg-white/10 rounded-xl p-3 flex justify-between items-center text-xs"><span data-i="secondPlaceText">🥈 2nd Place Winner</span><b class="font-display text-base">€50</b></div>
+<div class="bg-white/10 rounded-xl p-3 flex justify-between items-center text-xs"><span data-i="thirdPlaceText">🥉 3rd Place Winner</span><b class="font-display text-base">€25</b></div>
+</div>
+</div>
+</div>
+<div class="card rounded-[16px] p-3.5 flex items-center gap-3 shadow-sm">
+<img src="[https://i.ibb.co/C0L0h0C/c3202eed-b271-461e-8ed2-4de31673eb7d.jpg](https://i.ibb.co/C0L0h0C/c3202eed-b271-461e-8ed2-4de31673eb7d.jpg)" class="w-11 h-11 rounded-full object-cover">
+<div class="flex-1 min-w-0"><div class="font-bold text-[13px]">Ljupcho Janeski <i class="fas fa-badge-check text-blue-500"></i></div><div class="text-[11px] text-zinc-500" data-i="organizerSub">Organizer • Frankfurt am Main</div></div>
+</div>
+</div>
+</div>
+</section>
+<section id="sponsorSection" class="border-y border-black/5 py-10">
+<div class="max-w-[1320px] mx-auto px-4 md:px-6">
+<div class="text-center max-w-[600px] mx-auto mb-8">
+<div class="inline-flex items-center gap-2 bg-black text-white rounded-full px-3 py-1 text-[10px] font-black tracking-widest mb-3" data-i="sponsorsDirBadge">💰 OFFICIAL SPONSORS DIRECTORY</div>
+<h3 class="font-display text-2xl md:text-4xl font-extrabold tracking-tight" data-i="sponsorsHeader">Active Contest Patrons</h3>
+<p class="text-xs text-zinc-500 mt-2" data-i="sponsorsSub">Спонзорствата се менаџираат, активираат и бришат директно преку заштитениот админ панел.</p>
+</div>
+<div id="sponsorsGrid" class="grid md:grid-cols-3 gap-4 max-w-[1000px] mx-auto"></div>
+</div>
+</section>
+<section class="max-w-[1320px] mx-auto px-4 md:px-6 py-10">
+<div class="grid lg:grid-cols-12 gap-6 items-start">
+<div class="lg:col-span-8">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+<h3 class="font-display text-xl font-black" data-i="liveStandingsHeader">🏆 Live Active Standings</h3>
+<div class="flex gap-1.5 bg-zinc-100 p-1 rounded-full w-fit">
+<button onclick="setFilter('trending')" id="filterTrending" class="px-3 py-1 rounded-full text-xs font-bold bg-black text-white shadow-sm transition" data-i="filterTrending">Trending</button>
+<button onclick="setFilter('latest')" id="filterLatest" class="px-3 py-1 rounded-full text-xs font-bold text-zinc-600 transition" data-i="filterLatest">Latest</button>
+</div>
+</div>
+<div id="gallery" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+</div>
+<div class="lg:col-span-4 space-y-4 lg:sticky lg:top-[90px]">
+<div class="card rounded-[22px] p-5 shadow-sm">
+<h4 class="font-display font-bold text-xs mb-3 flex items-center gap-1.5" data-i="leaderboardHeader">🥇 CURRENT LEADERBOARD</h4>
+<div id="leaderboard" class="space-y-2"></div>
+<div class="mt-6 p-4 bg-zinc-900 text-white rounded-xl">
+<h5 class="font-bold text-[11px] tracking-wide" data-i="radarTitle">SUBSCRIBE FOR WINNERS RADAR</h5>
+<p class="text-[10px] text-zinc-400 mt-1" data-i="radarDesc">Get custom digests of top ranking AI artwork weekly.</p>
+<div class="mt-3 flex gap-2">
+<input id="newsletterEmail" type="email" placeholder="email@address.com" class="flex-1 bg-white/10 rounded-full px-3 py-2 text-xs outline-none">
+<button onclick="joinNewsletter()" class="bg-white text-black px-4 rounded-full text-xs font-black" data-i="joinBtn">JOIN</button>
+</div>
+</div>
+</div>
+<div class="bg-zinc-950 text-white rounded-[24px] p-4 h-[350px] flex flex-col border border-white/5 shadow-2xl">
+<div class="flex items-center justify-between mb-3 border-b border-white/10 pb-2">
+<span class="text-[10px] font-bold tracking-widest text-emerald-400 uppercase" data-i="communityLounge">● Community Lounge</span>
+<span class="text-[9px] text-zinc-500 bg-white/5 px-2 py-0.5 rounded-full">REALTIME</span>
+</div>
+<div id="chatBox" class="flex-grow overflow-y-auto space-y-2 text-xs pr-1"></div>
+<div class="relative mt-2">
+<input type="text" id="chatInput" placeholder="Напиши нешто..." onkeydown="if(event.key==='Enter') sendLiveMessage()" class="w-full bg-white/10 rounded-full pl-4 pr-10 py-2.5 text-xs outline-none border border-white/5">
+<button onclick="sendLiveMessage()" class="absolute right-1.5 top-1.5 bg-white text-black w-7 h-7 rounded-full flex items-center justify-center"><i class="fas fa-arrow-up text-[10px]"></i></button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-black text-white py-10 text-sm">
+<div class="max-w-[1320px] mx-auto px-4 md:px-6 grid md:grid-cols-3 gap-6">
+<div><span class="font-display font-bold text-sm">GAC.AI</span><p class="text-zinc-500 text-xs mt-2" data-i="footerLocation">Frankfurt am Main • Germany</p></div>
+<div class="text-xs text-zinc-400 space-y-1">
+<p class="hover:text-white cursor-pointer" onclick="openLegal('impressum')">→ Impressum</p>
+<p class="hover:text-white cursor-pointer" onclick="openLegal('privacy')">→ Datenschutz</p>
+<p>Contact: <a href="mailto:Koska.ohrid@yahoo.com" class="text-white underline">Koska.ohrid@yahoo.com</a></p>
+</div>
+</div>
+</footer>
+<div id="museumModal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-xl z-50 flex flex-col p-4 overflow-y-auto">
+<div class="max-w-[1100px] w-full mx-auto my-auto bg-white rounded-[24px] p-6 shadow-2xl flex flex-col max-h-[90vh]">
+<div class="flex justify-between items-center border-b pb-4 mb-4">
+<div>
+<h3 class="font-display text-xl font-black" data-i="museumModalTitle">🏛️ Permanent AI Museum Archive</h3>
+<p class="text-[10px] text-zinc-400" data-i="museumModalSub">Entry is free and open to all artists</p>
+</div>
+<div class="flex items-center gap-2">
+<button onclick="window.open('[https://paypal.me/LjupchoJaneski/3EUR','_blank](https://paypal.me/LjupchoJaneski/3EUR','_blank)')" class="bg-amber-400 text-black text-xs font-black px-4 py-2 rounded-full shadow-sm" data-i="museumModalBtn">Make your art part of internet history for €3</button>
+<button onclick="closeMuseumModal()" class="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center"><i class="fas fa-times text-xs"></i></button>
+</div>
+</div>
+<div id="museumGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-4 overflow-y-auto pr-1"></div>
+</div>
+</div>
+<div id="submitModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+<div class="bg-white rounded-[24px] p-6 max-w-[420px] w-full relative">
+<button onclick="closeSubmitModal()" class="absolute top-4 right-4 text-zinc-400"><i class="fas fa-times"></i></button>
+<h3 class="font-display text-lg font-bold mb-3" data-i="submitModalTitle">Submit Artwork</h3>
+<div class="space-y-3">
+<input type="text" id="userArtTitle" placeholder="Title" class="w-full bg-zinc-50 border p-3 rounded-xl text-xs outline-none">
+<input type="text" id="userArtAuthor" placeholder="Artist @handle" class="w-full bg-zinc-50 border p-3 rounded-xl text-xs outline-none">
+<input type="file" id="publicFileInput" accept="image/*" onchange="handleFile(event, 'public')">
+<button onclick="document.getElementById('publicFileInput').click()" class="w-full bg-zinc-100 py-6 border-2 border-dashed rounded-xl text-xs font-bold text-zinc-500" data-i="uploadFrameBtn">Upload Image Frame</button>
+<button onclick="submitUserArt()" class="w-full bg-black text-white py-3 rounded-full font-black text-xs shadow-md" data-i="publishBoardBtn">Publish to Main Board</button>
+</div>
+</div>
+</div>
+<div id="lightboxModal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-2xl z-[70] flex items-center justify-center p-4" onclick="closeLightbox()">
+<div class="relative max-w-4xl w-full flex flex-col items-center" onclick="event.stopPropagation()">
+<button onclick="closeLightbox()" class="absolute -top-12 right-0 text-white text-xl bg-white/10 w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/20 transition"><i class="fas fa-times"></i></button>
+<img id="lightboxImg" src="" class="max-h-[75vh] w-auto object-contain rounded-2xl shadow-2xl border border-white/10">
+<div class="mt-4 text-center text-white">
+<h3 id="lightboxTitle" class="font-display font-extrabold text-lg"></h3>
+<p id="lightboxAuthor" class="text-xs text-zinc-400 mt-0.5"></p>
+</div>
+</div>
+</div>
+<div id="legalModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xl z-[60] flex items-center justify-center p-4"><div class="bg-white rounded-[20px] p-6 max-w-[500px] w-full relative"><button onclick="closeLegal()" class="absolute top-3 right-3"><i class="fas fa-times"></i></button><h3 id="legalTitle" class="font-display font-bold mb-2"></h3><div id="legalContent" class="text-xs text-zinc-600 whitespace-pre-line"></div></div></div>
+<div id="adminPanel" class="hidden fixed inset-0 bg-[#f7f7f5] z-50 overflow-y-auto p-4 md:p-8">
+<div class="max-w-[1200px] mx-auto bg-white border border-black/10 rounded-[24px] p-6 shadow-2xl">
+<div class="flex justify-between items-center border-b pb-4 mb-6">
+<h3 class="text-amber-500 font-display font-black text-lg">🚀 ADMINISTRATIVE ECOSYSTEM ENGINE</h3>
+<button onclick="closeAdmin()" class="bg-black text-white px-4 py-1.5 rounded-full text-xs font-bold">Lock & Exit</button>
+</div>
+<div id="adminLogin" class="text-center py-10 max-w-xs mx-auto">
+<input type="password" id="adminPass" placeholder="Security PIN Password" class="w-full p-3 border rounded-xl text-center text-xs mb-3">
+<button onclick="doLogin()" class="w-full bg-black text-white py-2.5 rounded-full font-bold text-xs">Authorize Admin Session</button>
+</div>
+<div id="adminDashboard" class="hidden grid md:grid-cols-12 gap-6">
+<div class="md:col-span-5 space-y-4">
+<div class="bg-zinc-50 border rounded-xl p-4">
+<h4 class="font-bold text-[11px] text-zinc-400 uppercase mb-2">A. Push Artwork Direct (Always Free)</h4>
+<input type="text" id="adminArtTitle" placeholder="Title" class="w-full p-2 border text-xs rounded-lg mb-2">
+<input type="text" id="adminArtAuthor" placeholder="Artist Name" class="w-full p-2 border text-xs rounded-lg mb-2">
+<input type="file" id="adminFileInput" accept="image/*" onchange="handleFile(event, 'admin')">
+<button onclick="document.getElementById('adminFileInput').click()" class="w-full bg-white border py-2 text-xs font-medium rounded-lg mb-2">Load Binary Image</button>
+<button onclick="adminPublishDirectly()" class="w-full bg-black text-white py-2 rounded-lg text-xs font-black">Publish Direct</button>
+</div>
+<div class="bg-zinc-50 border rounded-xl p-4">
+<h4 class="font-bold text-[11px] text-zinc-400 uppercase mb-2">B. Deploy/Advertise Sponsor</h4>
+<input type="text" id="sponName" placeholder="Brand/Sponsor Name" class="w-full p-2 border text-xs rounded-lg mb-2">
+<select id="sponTier" class="w-full p-2 border text-xs rounded-lg mb-2">
+<option value="Gold">Gold Tier (€150)</option>
+<option value="Silver">Silver Tier (€75)</option>
+<option value="Bronze">Bronze Tier (€25)</option>
+</select>
+<input type="text" id="sponPrice" placeholder="Price Matrix (e.g. €25/season)" class="w-full p-2 border text-xs rounded-lg mb-2">
+<input type="text" id="sponLink" placeholder="Redirect Destination Link" class="w-full p-2 border text-xs rounded-lg mb-3">
+<button onclick="addSponsor()" class="w-full bg-emerald-600 text-white py-2 rounded-lg text-xs font-black">Inject Sponsor Node</button>
+</div>
+</div>
+<div class="md:col-span-7 space-y-4">
+<div class="bg-white border rounded-xl p-4">
+<h4 class="font-bold text-[11px] text-zinc-400 uppercase mb-2">Dynamic Live Art Purging ({Gallery Deletion})</h4>
+<div id="adminArtList" class="space-y-1.5 max-h-[180px] overflow-y-auto text-xs"></div>
+</div>
+<div class="bg-white border rounded-xl p-4">
+<h4 class="font-bold text-[11px] text-zinc-400 uppercase mb-2">Sponsor Contract Eviction ({Remove Ads})</h4>
+<div id="adminSponsorList" class="space-y-1.5 max-h-[150px] overflow-y-auto text-xs"></div>
+</div>
+<div class="bg-white border rounded-xl p-4">
+<h4 class="font-bold text-[11px] text-zinc-400 uppercase mb-2">Lounge Chat Moderation Panel ({Purge Spam})</h4>
+<div id="adminChatList" class="space-y-1.5 max-h-[150px] overflow-y-auto text-xs"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+document.getElementById('mobileNav').classList.toggle('hidden');
+});
+function closeMobileNav() {
+document.getElementById('mobileNav').classList.add('hidden');
+}
+let artworks=[], sponsors=[], publicB64="", adminB64="", currentFilter="trending", currentLang="en";
+const firebaseConfig={apiKey:"AIzaSyAwVpKXnkUTsEfmKYuWNLGwv00y8v6e06Q",authDomain:"artcontest-web.firebaseapp.com",databaseURL:"https://artcontest-web-default-rtdb.firebaseio.com",projectId:"artcontest-web",storageBucket:"artcontest-web.firebasestorage.app",messagingSenderId:"42015828751",appId:"1:42015828751:web:28aa052010d26f69c22c7a"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const database=firebase.database();
+const translations = {
+en: {
+seasonLive: "SEASON 01 LIVE",
+viewsMonth: "views this month",
+artistsBadge: "500+ ARTISTS",
+donateBtn: "DONATE",
+adminBtn: "ADMIN",
+submitBtn: "SUBMIT",
+navGallery: "Gallery",
+navMuseum: "Museum",
+navSubmit: "Submit Art",
+artworksText: "artworks",
+votesText: "votes",
+heroLine1: "AI art that",
+heroLine2: "wins real",
+heroLine3: "money.",
+freeEntryBadge: "FREE ENTRY",
+museumHeader: "AI MUSEUM",
+museumSubHeader: "Enter the permanent archive and browse masterpieces",
+openBtn: "OPEN →",
+heroDescription: "€175 fixed prize escrowed in PayPal Business. Every vote verified, every artwork checked. Join 500+ artists, get featured, win sponsors.",
+submitArtButton: "SUBMIT YOUR ART NOW",
+artistsJoinedText: "500+ artists joined",
+prizePoolLabel: "PRIZE POOL",
+escrowedLabel: "Escrowed",
+votingLabel: "VOTING",
+antibotLabel: "Anti-bot",
+entryLabel: "ENTRY",
+freeLabel: "FREE",
+first30Label: "First 30",
+prizeStructHeader: "PRIZE STRUCTURE",
+escrowVerifiedBadge: "● ESCROW VERIFIED",
+firstPlaceText: "🥇 1st Place Winner",
+secondPlaceText: "🥈 2nd Place Winner",
+thirdPlaceText: "🥉 3rd Place Winner",
+organizerSub: "Organizer • Frankfurt am Main",
+sponsorsDirBadge: "💰 OFFICIAL SPONSORS DIRECTORY",
+sponsorsHeader: "Active Contest Patrons",
+sponsorsSub: "Спонзорствата се менаџираат, активираат и бришат директно преку заштитениот админ панел.",
+liveStandingsHeader: "🏆 Live Active Standings",
+filterTrending: "Trending",
+filterLatest: "Latest",
+leaderboardHeader: "🥇 CURRENT LEADERBOARD",
+radarTitle: "SUBSCRIBE FOR WINNERS RADAR",
+radarDesc: "Get custom digests of top ranking AI artwork weekly.",
+joinBtn: "JOIN",
+communityLounge: "● Community Lounge",
+footerLocation: "Frankfurt am Main • Germany",
+museumModalTitle: "🏛️ Permanent AI Museum Archive",
+museumModalSub: "Entry is free and open to all artists",
+museumModalBtn: "Make your art part of internet history for €3",
+submitModalTitle: "Submit Artwork",
+uploadFrameBtn: "Upload Image Frame",
+publishBoardBtn: "Publish to Main Board"
+},
+de: {
+seasonLive: "SAISON 01 LIVE",
+viewsMonth: "Aufrufe diesen Monat",
+artistsBadge: "500+ KÜNSTLER",
+donateBtn: "SPENDEN",
+adminBtn: "ADMIN",
+submitBtn: "EINREICHEN",
+navGallery: "Galerie",
+navMuseum: "Museum",
+navSubmit: "Kunst einreichen",
+artworksText: "Kunstwerke",
+votesText: "Stimmen",
+heroLine1: "KI-Kunst, die",
+heroLine2: "echtes Geld",
+heroLine3: "gewinnt.",
+freeEntryBadge: "FREIER EINTRITT",
+museumHeader: "KI-MUSEUM",
+museumSubHeader: "Betreten Sie das permanente Archiv und stöbern Sie in Meisterwerken",
+openBtn: "ÖFFNEN →",
+heroDescription: "175 € fester Preis im PayPal Business Treuhandkonto hinterlegt. Jede Stimme verifiziert, jedes Kunstwerk geprüft. Schließe dich 500+ Künstlern an.",
+submitArtButton: "KUNST JETZT EINREICHEN",
+artistsJoinedText: "500+ Künstler dabei",
+prizePoolLabel: "PREISTOPF",
+escrowedLabel: "Treuhand",
+votingLabel: "ABSTIMMUNG",
+antibotLabel: "Anti-Bot",
+entryLabel: "EINTRITT",
+freeLabel: "GRATIS",
+first30Label: "Erste 30",
+prizeStructHeader: "PREISSTRUKTUR",
+escrowVerifiedBadge: "● TREUHAND GEPRÜFT",
+firstPlaceText: "🥇 1. Platz Gewinner",
+secondPlaceText: "🥈 2. Platz Gewinner",
+thirdPlaceText: "🥉 3. Platz Gewinner",
+organizerSub: "Organisator • Frankfurt am Main",
+sponsorsDirBadge: "💰 OFFIZIELLES SPONSORENVERZEICHNIS",
+sponsorsHeader: "Aktive Sponsoren",
+sponsorsSub: "Sponsorenverträge werden direkt über das geschützte Admin-Panel verwaltet.",
+liveStandingsHeader: "🏆 Live-Rangliste",
+filterTrending: "Trending",
+filterLatest: "Neueste",
+leaderboardHeader: "🥇 AKTUELLER RANG",
+radarTitle: "FÜR GEWINNER-RADAR ANMELDEN",
+radarDesc: "Erhalte wöchentlich die besten KI-Kunstwerke.",
+joinBtn: "BEITRETEN",
+communityLounge: "● Community-Lounge",
+footerLocation: "Frankfurt am Main • Deutschland",
+museumModalTitle: "🏛️ Permanentes KI-Museumsarchiv",
+museumModalSub: "Der Eintritt ist frei und offen für alle Künstler",
+museumModalBtn: "Mache deine Kunst für 3 € ein Teil der Internetgeschichte",
+submitModalTitle: "Kunstwerk einreichen",
+uploadFrameBtn: "Bild hochladen",
+publishBoardBtn: "Auf Haupttafel veröffentlichen"
+}
+};
+const LEGAL={
+privacy:{title:"Privacy Matrix",html:"Data structures allocated inside Frankfurt-compliant Firebase architectures."},
+impressum:{title:"Legal Impressum",html:"Global AI Art Championship Initiative\nFrankfurt am Main\nContact: Koska.ohrid@yahoo.com"}
+};
+function showToast(msg) {
+const container = document.getElementById('toastContainer');
+const toast = document.createElement('div');
+toast.className = 'toast';
+toast.innerHTML = <i class="fas fa-check-circle text-emerald-400"></i> ${msg};
+container.appendChild(toast);
+setTimeout(() => {
+toast.style.opacity = '0';
+toast.style.transform = 'translateY(20px)';
+toast.style.transition = 'all 0.3s ease';
+setTimeout(() => toast.remove(), 300);
+}, 3000);
+}
+function changeLanguage(lang) {
+currentLang = lang;
+document.documentElement.lang = lang;
+const t = translations[lang];
+if(!t) return;
+document.querySelectorAll('[data-i]').forEach(el => {
+const key = el.getAttribute('data-i');
+if(t[key]) el.textContent = t[key];
+});
+}
+function listenToDatabase() {
+database.ref("artworks").on("value", snap => {
+const data=snap.val(); artworks=data?Object.keys(data).map(k=>({id:k,...data[k]})):[];
+renderGallery(); renderMuseum(); renderLeaderboard(); renderAdminArtList();
+});
+database.ref("sponsors").on("value", snap => {
+const data=snap.val(); sponsors=data?Object.keys(data).map(k=>({id:k,...data[k]})):[];
+renderSponsors(); renderAdminSponsors();
+});
+database.ref("lounge").on("value", snap => {
+const data=snap.val(); const msgs=data?Object.keys(data).map(k=>({id:k,...data[k]})):[];
+renderLounge(msgs); renderAdminChatList(msgs);
+});
+}
+function handleFile(ev, type) {
+const file = ev.target.files[0]; if(!file) return;
+const rd = new FileReader(); rd.readAsDataURL(file);
+rd.onload = e => {
+const img = new Image(); img.src = e.target.result;
+img.onload = () => {
+const cv = document.createElement('canvas'), cx = cv.getContext('2d');
+cv.width = 700; cv.height = 525; cx.drawImage(img,0,0,700,525);
+if(type==='public') publicB64=cv.toDataURL('image/jpeg', 0.7);
+else adminB64=cv.toDataURL('image/jpeg', 0.7);
+}
+}
+}
+function submitUserArt() {
+const t=document.getElementById('userArtTitle').value.trim(), a=document.getElementById('userArtAuthor').value.trim();
+if(!t||!a||!publicB64) return alert("Ве молиме пополнете ги сите полиња (Наслов, Автор и Слика).");
+database.ref("artworks/art_"+Date.now()).set({title:t, author:a, image:publicB64, votes:0, timestamp:Date.now()}).then(()=>{ showToast("Успешно објавено!"); closeSubmitModal(); document.getElementById('userArtTitle').value=""; document.getElementById('userArtAuthor').value=""; publicB64=""; });
+}
+function adminPublishDirectly() {
+const t=document.getElementById('adminArtTitle').value.trim(), a=document.getElementById('adminArtAuthor').value.trim();
+if(!t||!a||!adminB64) return alert("Пополнете ги сите администраторски полиња.");
+database.ref("artworks/art_"+Date.now()).set({title:t, author:a, image:adminB64, votes:0, timestamp:Date.now()}).then(()=>{ showToast("Успешно додадено во галеријата."); document.getElementById('adminArtTitle').value=""; document.getElementById('adminArtAuthor').value=""; adminB64=""; });
+}
+function addSponsor() {
+const n=document.getElementById('sponName').value.trim(), t=document.getElementById('sponTier').value, p=document.getElementById('sponPrice').value.trim(), l=document.getElementById('sponLink').value.trim();
+if(!n||!p||!l) return alert("Пополнете ги сите податоци за спонзорот.");
+database.ref("sponsors/sp_"+Date.now()).set({name:n, tier:t, price:p, link:l}).then(()=>{ showToast("Спонзорски јазол додаден."); document.getElementById('sponName').value=""; document.getElementById('sponPrice').value=""; document.getElementById('sponLink').value=""; });
+}
+function deleteItem(path) { if(confirm("Дали сте сигурни за бришење на овој запис?")) database.ref(path).remove().then(()=>showToast("Записот е избришан.")); }
+function doVote(id){ database.ref("artworks/"+id+"/votes").transaction(c=>(c||0)+1).then(()=>showToast("Успешно гласавте!")); }
+function sendLiveMessage() {
+const input = document.getElementById('chatInput'); if(!input.value.trim()) return;
+database.ref("lounge/msg_"+Date.now()).set({user: "User_"+Math.floor(Math.random()*999), text: input.value.trim(), ts: Date.now()});
+input.value="";
+}
+function setFilter(filter) {
+currentFilter = filter;
+const btnT = document.getElementById('filterTrending');
+const btnL = document.getElementById('filterLatest');
+if(filter === 'trending') {
+btnT.className = "px-3 py-1 rounded-full text-xs font-bold bg-black text-white shadow-sm transition";
+btnL.className = "px-3 py-1 rounded-full text-xs font-bold text-zinc-600 transition";
+} else {
+btnL.className = "px-3 py-1 rounded-full text-xs font-bold bg-black text-white shadow-sm transition";
+btnT.className = "px-3 py-1 rounded-full text-xs font-bold text-zinc-600 transition";
+}
+renderGallery();
+}
+function openLightbox(imgSrc, title, author) {
+document.getElementById('lightboxImg').src = imgSrc;
+document.getElementById('lightboxTitle').textContent = title;
+document.getElementById('lightboxAuthor').textContent = "by " + author;
+document.getElementById('lightboxModal').classList.remove('hidden');
+}
+function closeLightbox() {
+document.getElementById('lightboxModal').classList.add('hidden');
+}
+function renderGallery() {
+let sorted = [...artworks];
+if(currentFilter === 'trending') {
+sorted.sort((a,b)=>(b.votes||0)-(a.votes||0));
+} else {
+sorted.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+}
+document.getElementById('gallery').innerHTML = sorted.map(art =>  <div class="card rounded-[18px] overflow-hidden flex flex-col bg-white"> <img src="${art.image}" class="w-full aspect-[4/3] object-cover cursor-pointer hover:opacity-95 transition" onclick="openLightbox('${art.image}', '${art.title.replace(/'/g, "\\'")}', '${art.author.replace(/'/g, "\\'")}')"> <div class="p-4 flex flex-col flex-grow"> <div class="flex justify-between items-start mb-3"><div><h4 class="font-bold text-sm truncate max-w-[180px]">${art.title}</h4><p class="text-xs text-zinc-400 truncate max-w-[150px]">by ${art.author}</p></div><span class="text-xs font-bold bg-zinc-100 px-2.5 py-1 rounded-full">❤️ ${art.votes || 0}</span></div> <button onclick="doVote('${art.id}')" class="vote-btn w-full py-2 rounded-full text-xs font-black mt-2 shadow-sm">VOTE</button> <button onclick="window.open('[https://paypal.me/LjupchoJaneski/5EUR','_blank](https://paypal.me/LjupchoJaneski/5EUR','_blank)')" class="promote-btn w-full py-2 rounded-full text-xs mt-2 shadow-sm border border-amber-500">PROMOTE</button> </div> </div>).join('');
+const totalV = artworks.reduce((s,a)=>s+(a.votes||0),0);
+document.getElementById('liveCount').textContent = artworks.length;
+document.getElementById('liveVotes').textContent = totalV;
+}
+function renderMuseum() {
+document.getElementById('museumGrid').innerHTML = artworks.map(art =>  <div class="bg-zinc-50 border rounded-xl p-2 flex flex-col cursor-pointer hover:border-black/20 transition" onclick="openLightbox('${art.image}', '${art.title.replace(/'/g, "\\'")}', '${art.author.replace(/'/g, "\\'")}')"> <img src="${art.image}" class="w-full aspect-square object-cover rounded-lg"> <h4 class="font-bold text-xs mt-2 truncate">${art.title}</h4> <p class="text-[10px] text-zinc-400 truncate">by ${art.author}</p> </div>).join('');
+}
+function renderLeaderboard() {
+const sorted = [...artworks].sort((a,b)=>(b.votes||0)-(a.votes||0)).slice(0,5);
+document.getElementById('leaderboard').innerHTML = sorted.map((art, idx)=><div class="flex justify-between text-xs py-1.5 border-b border-black/5"><span>#${idx+1} ${art.title}</span><span class="font-black text-violet-600">${art.votes || 0} v.</span></div>).join('');
+}
+function renderSponsors() {
+const grid = document.getElementById('sponsorsGrid');
+if(sponsors.length === 0) { grid.innerHTML = <div class="col-span-3 text-center text-xs text-zinc-400 py-6 border border-dashed rounded-xl">Нема активни спонзори.</div>; return; }
+grid.innerHTML = sponsors.map(sp =>  <div class="border rounded-xl p-4 bg-white relative"> <span class="absolute top-2 right-2 text-[9px] font-black px-2 py-0.5 rounded-full bg-black text-white">${sp.tier}</span> <h4 class="font-bold text-sm">${sp.name}</h4> <p class="text-[11px] text-zinc-400 mt-1">${sp.price}</p> <a href="${sp.link}" target="_blank" class="inline-block mt-3 text-xs font-bold text-violet-600">Open Asset Link →</a> </div>).join('');
+document.getElementById('marqueeContainer').innerHTML = sponsors.map(sp => <span> ⭐ MAIN SPONSOR: ${sp.name.toUpperCase()} (${sp.tier.toUpperCase()}) • </span>).join('') + <span> 🔥 RUNNING SPONSOR CONTRACT MANAGEMENT LIVE SYSTEM ACTIVE • </span>;
+}
+function renderLounge(msgs) {
+const box = document.getElementById('chatBox');
+box.innerHTML = msgs.map(m=><div class="bg-white/5 p-2 rounded-xl border border-white/5"><b class="text-zinc-400">${m.user}:</b> <span class="text-white">${m.text}</span></div>).join('');
+box.scrollTop = box.scrollHeight;
+}
+function renderAdminArtList() { document.getElementById('adminArtList').innerHTML = artworks.map(art => <div class="flex justify-between items-center bg-zinc-50 p-2 border rounded-lg"><span>${art.title}</span><button onclick="deleteItem('artworks/${art.id}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px]">DELETE</button></div>).join(''); }
+function renderAdminSponsors() { document.getElementById('adminSponsorList').innerHTML = sponsors.map(sp => <div class="flex justify-between items-center bg-zinc-50 p-2 border rounded-lg"><span>${sp.name}</span><button onclick="deleteItem('sponsors/${sp.id}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px]">REMOVE</button></div>).join(''); }
+function renderAdminChatList(msgs) { document.getElementById('adminChatList').innerHTML = msgs.map(m => <div class="flex justify-between items-center bg-zinc-50 p-2 border rounded-lg"><span class="truncate max-w-[80%]"><b>${m.user}:</b> ${m.text}</span><button onclick="deleteItem('lounge/${m.id}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px]">MUTE</button></div>).join(''); }
+function openLegal(k){ const d=LEGAL[k]; document.getElementById('legalTitle').textContent=d.title; document.getElementById('legalContent').textContent=d.html; document.getElementById('legalModal').classList.remove('hidden'); }
+function closeLegal(){ document.getElementById('legalModal').classList.add('hidden'); }
+function joinNewsletter(){ const email=document.getElementById('newsletterEmail').value.trim(); if(email) database.ref('newsletter/'+Date.now()).set({email}).then(()=>showToast('Успешно се претплативте!')); }
+function showAdmin(){ document.getElementById('adminPanel').classList.remove('hidden'); }
+function closeAdmin(){ document.getElementById('adminPanel').classList.add('hidden'); }
+function doLogin(){ if(document.getElementById('adminPass').value==='admin123'){ document.getElementById('adminLogin').classList.add('hidden'); document.getElementById('adminDashboard').classList.remove('hidden'); } else { alert("Погрешна лозинка!"); } }
+function openSubmitModal(){ document.getElementById('submitModal').classList.remove('hidden'); }
+function closeSubmitModal(){ document.getElementById('submitModal').classList.add('hidden'); }
+function openMuseumModal(){ document.getElementById('museumModal').classList.remove('hidden'); }
+function closeMuseumModal(){ document.getElementById('museumModal').classList.add('hidden'); }
+listenToDatabase();
+</script>
+</body>
+</html>
